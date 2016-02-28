@@ -5,6 +5,12 @@
     <artifactId>ProblemsCreator</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <modules>
+        <module>Development</module>
+        <module>FileSystem</module>
+        <module>Interaction</module>
+        <module>Testing</module>
+    </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
