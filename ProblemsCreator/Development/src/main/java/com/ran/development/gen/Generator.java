@@ -1,5 +1,6 @@
 package com.ran.development.gen;
 
+import com.ran.development.util.RegularExpressionParser;
 import java.io.BufferedOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -12,8 +13,7 @@ public abstract class Generator {
     public static Generator getDefault() {
         return new Generator() {
             @Override
-            protected void generate(String[] args) {
-            }
+            protected void generate(String[] args) { }
         };
     }
     
@@ -49,6 +49,10 @@ public abstract class Generator {
     
     protected PrintStream getOutput() {
         return output;
+    }
+
+    protected RegularExpressionParser getParser() {
+        return parser;
     }
     
     protected void print(String line) {

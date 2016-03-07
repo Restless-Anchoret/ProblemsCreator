@@ -1,5 +1,6 @@
-package com.ran.development.gen;
+package com.ran.development.util;
 
+import com.ran.development.gen.Generator;
 import com.ran.development.logging.DevelopmentLogging;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -7,25 +8,27 @@ import java.nio.file.Path;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
-public class Generators {
+public class Utils {
 
-    private Generators() { }
+    private Utils() { }
     
-    public static Supplier<? extends Generator> getGeneratorSupplier(Path folderPath, String className) {
+    public static <T> Supplier<? extends T> getSupplier(Class<T> parentClass, Path folderPath, String className) {
         try {
             ClassLoader loader = new URLClassLoader(new URL[] { folderPath.toUri().toURL() });
-            Class<? extends Generator> cl = (Class<? extends Generator>)loader.loadClass(className);
+            Class<? extends T> cl = (Class<? extends T>)loader.loadClass(className);
             cl.newInstance();
             return () -> {
                 try {
                     return cl.newInstance();
                 } catch (InstantiationException | IllegalAccessException exception) {
-                    DevelopmentLogging.logger.log(Level.FINE, "Cannot create instance of Generator subclass", exception);
+                    String message = "Cannot create instance of " + parentClass.getName() + " subclass";
+                    DevelopmentLogging.logger.log(Level.FINE, message, exception);
                     return null;
                 }
             };
         } catch (Throwable throwable) {
-            DevelopmentLogging.logger.log(Level.FINE, "Cannot load Generator subclass", throwable);
+            String message = "Cannot load " + parentClass.getName() + " subclass";
+            DevelopmentLogging.logger.log(Level.FINE, message, throwable);
             return null;
         }
     }

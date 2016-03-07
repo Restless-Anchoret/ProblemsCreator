@@ -1,5 +1,7 @@
 package com.ran.development.gen;
 
+import com.ran.development.util.DevelopmentResult;
+import com.ran.development.util.DevelopmentListenerSupport;
 import com.ran.development.logging.DevelopmentLogging;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,12 +13,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.function.Supplier;
 import java.util.logging.Level;
+import com.ran.development.util.DevelopmentListener;
 
 public class MultiGenerator {
     
     private static final long MESSAGING_DELAY = 2000;
     
-    private GeneratorListenerSupport listenerSupport = new GeneratorListenerSupport();
+    private DevelopmentListenerSupport listenerSupport = new DevelopmentListenerSupport();
     private Supplier<? extends Generator> generatorSupplier = () -> { return Generator.getDefault(); };
     private int randomSeed = 0;
     private Path[] paths = { };
@@ -54,23 +57,23 @@ public class MultiGenerator {
         this.arguments = arguments;
     }
     
-    public void addGeneratorListener(GeneratorListener listener) {
-        listenerSupport.addGeneratorListener(listener);
+    public void addDevelopmentListener(DevelopmentListener listener) {
+        listenerSupport.addDevelopmentListener(listener);
     }
     
-    public void removeGeneratorListener(GeneratorListener listener) {
-        listenerSupport.removeGeneratorListener(listener);
+    public void removeDevelopmentListener(DevelopmentListener listener) {
+        listenerSupport.removeDevelopmentListener(listener);
     }
     
-    public Set<GeneratorListener> getGeneratorListeners() {
-        return listenerSupport.getGeneratorListeners();
+    public Set<DevelopmentListener> getDevelopmentListeners() {
+        return listenerSupport.getDevelopmentListeners();
     }
     
     public void performGenerating() {
-        listenerSupport.fireGeneratingStarted();
+        listenerSupport.fireProcessingStarted();
         Generator generator = generatorSupplier.get();
         if (generator == null) {
-            finishEarlier("Cannot instantiate Generator subclass", GeneratingResult.Info.FAIL, 0, paths.length);
+            finishEarlier("Cannot instantiate Generator subclass", DevelopmentResult.Info.FAIL, 0, paths.length);
             return;
         }
         generator.setRandomSeed(randomSeed);
@@ -80,7 +83,7 @@ public class MultiGenerator {
             Thread thread = null;
             try (OutputStream output = new FileOutputStream(path.toFile())) {
                 generator.setOutput(output);
-                FutureTask<GeneratingResult> futureTask = new FutureTask<>(new GeneratingTask(generator, index, arguments));
+                FutureTask<DevelopmentResult> futureTask = new FutureTask<>(new GeneratingTask(generator, index, arguments));
                 thread = new Thread(futureTask);
                 start = System.currentTimeMillis();
                 thread.start();
@@ -90,35 +93,35 @@ public class MultiGenerator {
                         listenerSupport.fireTaskIsProcessing(index, System.currentTimeMillis() - start);
                     }
                 }
-                listenerSupport.fireTaskDone(futureTask.get());
+                listenerSupport.fireTaskIsDone(futureTask.get());
             } catch (IOException exception) {
                 String message = "Cannot open output file";
                 DevelopmentLogging.logger.log(Level.FINE, message, exception);
-                listenerSupport.fireTaskDone(new GeneratingResult(index, message, GeneratingResult.Info.FAIL,
+                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message, DevelopmentResult.Info.FAIL,
                         System.currentTimeMillis() - start));
             } catch (InterruptedException exception) {
                 thread.stop();
-                listenerSupport.fireTaskDone(new GeneratingResult(index, "Generating interrupted",
-                        GeneratingResult.Info.INTERRUPTED, System.currentTimeMillis() - start));
-                finishEarlier("Did not run", GeneratingResult.Info.DID_NOT_RUN, index + 1, paths.length);
+                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, "Generating interrupted",
+                        DevelopmentResult.Info.INTERRUPTED, System.currentTimeMillis() - start));
+                finishEarlier("Did not run", DevelopmentResult.Info.DID_NOT_RUN, index + 1, paths.length);
                 return;
             } catch (ExecutionException exception) {
                 String message = "Exception while execution of generating";
                 DevelopmentLogging.logger.log(Level.FINE, message, exception);
-                listenerSupport.fireTaskDone(new GeneratingResult(index, message, GeneratingResult.Info.FAIL));
+                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message, DevelopmentResult.Info.FAIL));
             }
         }
-        listenerSupport.fireGeneratingFinished();
+        listenerSupport.fireProcessingFinished();
     }
     
-    private void finishEarlier(String message, GeneratingResult.Info info, int from, int to) {
+    private void finishEarlier(String message, DevelopmentResult.Info info, int from, int to) {
         for (int i = from; i < to; i++) {
-            listenerSupport.fireTaskDone(new GeneratingResult(i, message, info));
+            listenerSupport.fireTaskIsDone(new DevelopmentResult(i, message, info));
         }
-        listenerSupport.fireGeneratingFinished();
+        listenerSupport.fireProcessingFinished();
     }
     
-    private static class GeneratingTask implements Callable<GeneratingResult> {
+    private static class GeneratingTask implements Callable<DevelopmentResult> {
         private String[] arguments;
         private Generator generator;
         private int generatorNumber;
@@ -130,17 +133,17 @@ public class MultiGenerator {
         }
         
         @Override
-        public GeneratingResult call() {
+        public DevelopmentResult call() {
             long start = System.currentTimeMillis();
             try {
                 generator.generate(arguments);
             } catch (Throwable throwable) {
                 String message = "Error or exception while generating";
                 DevelopmentLogging.logger.log(Level.FINE, message, throwable);
-                return new GeneratingResult(generatorNumber, message, GeneratingResult.Info.FAIL,
+                return new DevelopmentResult(generatorNumber, message, DevelopmentResult.Info.FAIL,
                         System.currentTimeMillis() - start);
             }
-            return new GeneratingResult(generatorNumber, System.currentTimeMillis() - start);
+            return new DevelopmentResult(generatorNumber, System.currentTimeMillis() - start);
         }
     }
     

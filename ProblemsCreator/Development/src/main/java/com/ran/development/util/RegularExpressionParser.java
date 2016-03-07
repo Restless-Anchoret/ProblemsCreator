@@ -1,29 +1,56 @@
-package com.ran.development.gen;
+package com.ran.development.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class RegularExpressionParser {
 
-    private Map<String, List<Character>> map = new HashMap<>();
+    private Map<String, List<Character>> mapList = new HashMap<>();
+    private Map<String, Set<Character>> mapSet = new HashMap<>();
     
     public char getCharacter(String regularExpression, int index) {
-        return getCharacters(regularExpression).get(index);
+        return getCharactersList(regularExpression).get(index);
     }
     
     public int getCharactersQuantity(String regularExpression) {
-        return getCharacters(regularExpression).size();
+        return getCharactersList(regularExpression).size();
     }
     
-    private List<Character> getCharacters(String regularExpression) {
-        List<Character> list = map.get(regularExpression);
+    public boolean matchesExpression(char symbol, String regularExpression) {
+        return getCharactersSet(regularExpression).contains(symbol);
+    }
+    
+    public boolean matchesExpression(String line, String regularExpression) {
+        Set<Character> set = getCharactersSet(regularExpression);
+        for (int i = 0; i < line.length(); i++) {
+            if (!set.contains(line.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private List<Character> getCharactersList(String regularExpression) {
+        List<Character> list = mapList.get(regularExpression);
         if (list == null) {
             list = parseExpression(regularExpression);
-            map.putIfAbsent(regularExpression, list);
+            mapList.putIfAbsent(regularExpression, list);
         }
         return list;
+    }
+    
+    private Set<Character> getCharactersSet(String regularExpression) {
+        Set<Character> set = mapSet.get(regularExpression);
+        if (set == null) {
+            List<Character> list = getCharactersList(regularExpression);
+            set = new HashSet(list);
+            mapSet.putIfAbsent(regularExpression, set);
+        }
+        return set;
     }
     
     private List<Character> parseExpression(String regularExpression) {
