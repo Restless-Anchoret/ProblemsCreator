@@ -4,24 +4,29 @@ public class DevelopmentResult {
     
     private static final String OK_MESSAGE = "Process finished successfully";
     
+    public static final int OK = 0,
+                            FAIL = 1,
+                            INTERRUPTED = 2,
+                            DID_NOT_RUN = 3;
+    
     private int taskNumber;
     private String message;
-    private Info info;
+    private int info;
     private Long time;
 
-    public DevelopmentResult(int taskNumber, String message, Info info, Long time) {
+    public DevelopmentResult(int taskNumber, String message, int info, Long time) {
         this.taskNumber = taskNumber;
         this.message = message;
         this.info = info;
         this.time = time;
     }
 
-    public DevelopmentResult(int taskNumber, String message, Info info) {
+    public DevelopmentResult(int taskNumber, String message, int info) {
         this(taskNumber, message, info, null);
     }
 
     public DevelopmentResult(int taskNumber, Long time) {
-        this(taskNumber, OK_MESSAGE, Info.OK, time);
+        this(taskNumber, OK_MESSAGE, OK, time);
     }
 
     public int getTaskNumber() {
@@ -32,19 +37,12 @@ public class DevelopmentResult {
         return message;
     }
 
-    public Info getInfo() {
+    public int getInfo() {
         return info;
     }
 
     public Long getTime() {
         return time;
-    }
-
-    public static enum Info {
-        OK,
-        INTERRUPTED,
-        FAIL,
-        DID_NOT_RUN
     }
     
 }

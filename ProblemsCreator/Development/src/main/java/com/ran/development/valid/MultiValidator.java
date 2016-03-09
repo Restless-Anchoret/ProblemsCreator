@@ -1,6 +1,5 @@
 package com.ran.development.valid;
 
-import com.ran.development.gen.Generator;
 import com.ran.development.logging.DevelopmentLogging;
 import com.ran.development.util.DevelopmentListener;
 import com.ran.development.util.DevelopmentListenerSupport;
@@ -65,7 +64,7 @@ public class MultiValidator {
         listenerSupport.fireProcessingStarted();
         Validator validator = validatorSupplier.get();
         if (validator == null) {
-            finishEarlier("Cannot instantiate Validator subclass", DevelopmentResult.Info.FAIL, 0, paths.length);
+            finishEarlier("Cannot instantiate Validator subclass", DevelopmentResult.FAIL, 0, paths.length);
             return;
         }
         for (int index = 1; index <= paths.length; index++) {
@@ -88,24 +87,24 @@ public class MultiValidator {
             } catch (IOException exception) {
                 String message = "Cannot open input file";
                 DevelopmentLogging.logger.log(Level.FINE, message, exception);
-                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message, DevelopmentResult.Info.FAIL,
+                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message, DevelopmentResult.FAIL,
                         System.currentTimeMillis() - start));
             } catch (InterruptedException exception) {
                 thread.stop();
                 listenerSupport.fireTaskIsDone(new DevelopmentResult(index, "Validating interrupted",
-                        DevelopmentResult.Info.INTERRUPTED, System.currentTimeMillis() - start));
-                finishEarlier("Did not run", DevelopmentResult.Info.DID_NOT_RUN, index + 1, paths.length);
+                        DevelopmentResult.INTERRUPTED, System.currentTimeMillis() - start));
+                finishEarlier("Did not run", DevelopmentResult.DID_NOT_RUN, index + 1, paths.length);
                 return;
             } catch (ExecutionException exception) {
                 String message = "Exception while execution of validating";
                 DevelopmentLogging.logger.log(Level.FINE, message, exception);
-                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message, DevelopmentResult.Info.FAIL));
+                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message, DevelopmentResult.FAIL));
             }
         }
         listenerSupport.fireProcessingFinished();
     }
     
-    private void finishEarlier(String message, DevelopmentResult.Info info, int from, int to) {
+    private void finishEarlier(String message, int info, int from, int to) {
         for (int i = from; i < to; i++) {
             listenerSupport.fireTaskIsDone(new DevelopmentResult(i, message, info));
         }
@@ -134,12 +133,12 @@ public class MultiValidator {
                 if (!state.isReaden()) {
                     message += " (line = " + state.getLineNumber() + ", column = " + state.getPosition() + ")";
                 }
-                return new DevelopmentResult(validatorNumber, message, DevelopmentResult.Info.FAIL,
+                return new DevelopmentResult(validatorNumber, message, DevelopmentResult.FAIL,
                         System.currentTimeMillis() - start);
             } catch (Throwable throwable) {
                 String message = "Unexpected exception while validating";
                 DevelopmentLogging.logger.log(Level.FINE, message, throwable);
-                return new DevelopmentResult(validatorNumber, message, DevelopmentResult.Info.FAIL,
+                return new DevelopmentResult(validatorNumber, message, DevelopmentResult.FAIL,
                         System.currentTimeMillis() - start);
             }
             return new DevelopmentResult(validatorNumber, System.currentTimeMillis() - start);

@@ -3,7 +3,8 @@ package com.ran.development.util;
 public interface DevelopmentListener {
 
     void processingStarted();
-    void taskIsProcessing(int generatorNumber, long timeFromStart);
+    void taskProcessingStarted(int taskNumber);
+    void taskIsProcessing(int taskNumber, long timeFromStart);
     void taskIsDone(DevelopmentResult result);
     void processingFinished();
     

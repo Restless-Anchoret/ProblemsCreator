@@ -73,11 +73,12 @@ public class MultiGenerator {
         listenerSupport.fireProcessingStarted();
         Generator generator = generatorSupplier.get();
         if (generator == null) {
-            finishEarlier("Cannot instantiate Generator subclass", DevelopmentResult.Info.FAIL, 0, paths.length);
+            finishEarlier("Cannot instantiate Generator subclass", DevelopmentResult.FAIL, 0, paths.length);
             return;
         }
         generator.setRandomSeed(randomSeed);
         for (int index = 1; index <= paths.length; index++) {
+            listenerSupport.fireTaskProcessingStarted(index);
             Path path = paths[index - 1];
             long start = System.currentTimeMillis();
             Thread thread = null;
@@ -97,24 +98,24 @@ public class MultiGenerator {
             } catch (IOException exception) {
                 String message = "Cannot open output file";
                 DevelopmentLogging.logger.log(Level.FINE, message, exception);
-                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message, DevelopmentResult.Info.FAIL,
+                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message, DevelopmentResult.FAIL,
                         System.currentTimeMillis() - start));
             } catch (InterruptedException exception) {
                 thread.stop();
                 listenerSupport.fireTaskIsDone(new DevelopmentResult(index, "Generating interrupted",
-                        DevelopmentResult.Info.INTERRUPTED, System.currentTimeMillis() - start));
-                finishEarlier("Did not run", DevelopmentResult.Info.DID_NOT_RUN, index + 1, paths.length);
+                        DevelopmentResult.INTERRUPTED, System.currentTimeMillis() - start));
+                finishEarlier("Did not run", DevelopmentResult.DID_NOT_RUN, index + 1, paths.length);
                 return;
             } catch (ExecutionException exception) {
                 String message = "Exception while execution of generating";
                 DevelopmentLogging.logger.log(Level.FINE, message, exception);
-                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message, DevelopmentResult.Info.FAIL));
+                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message, DevelopmentResult.FAIL));
             }
         }
         listenerSupport.fireProcessingFinished();
     }
     
-    private void finishEarlier(String message, DevelopmentResult.Info info, int from, int to) {
+    private void finishEarlier(String message, int info, int from, int to) {
         for (int i = from; i < to; i++) {
             listenerSupport.fireTaskIsDone(new DevelopmentResult(i, message, info));
         }
@@ -140,7 +141,7 @@ public class MultiGenerator {
             } catch (Throwable throwable) {
                 String message = "Error or exception while generating";
                 DevelopmentLogging.logger.log(Level.FINE, message, throwable);
-                return new DevelopmentResult(generatorNumber, message, DevelopmentResult.Info.FAIL,
+                return new DevelopmentResult(generatorNumber, message, DevelopmentResult.FAIL,
                         System.currentTimeMillis() - start);
             }
             return new DevelopmentResult(generatorNumber, System.currentTimeMillis() - start);

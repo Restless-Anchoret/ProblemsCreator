@@ -26,6 +26,12 @@ public class DevelopmentListenerSupport {
         });
     }
     
+    public void fireTaskProcessingStarted(int taskNumber) {
+        listeners.forEach(listener -> {
+            listener.taskProcessingStarted(taskNumber);
+        });
+    }
+    
     public void fireTaskIsProcessing(int taskNumber, long timeFromStart) {
         listeners.forEach(listener -> {
             listener.taskIsProcessing(taskNumber, timeFromStart);

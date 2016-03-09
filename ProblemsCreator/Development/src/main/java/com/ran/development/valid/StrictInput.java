@@ -29,7 +29,7 @@ public class StrictInput {
         this.reader = new SingleCharReader(new BufferedReader(new InputStreamReader(inputStream)));
     }
 
-    public boolean isReaden() throws ValidationException {
+    public boolean isReaden() {
         return readen;
     }
 
