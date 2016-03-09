@@ -21,8 +21,8 @@ public class CodingProblemTester implements ProblemTester {
 
     @Override
     public void performTesting(TestingFileSupplier fileSupplier, TestingInfo info) {
-        Path sourceFile = fileSupplier.getSubmissionSourceFile(info.getSubmissionFolder());
-        Path compileFolder = fileSupplier.getSubmissionCompileFolder(info.getSubmissionFolder());
+        Path sourceFile = info.getCodeFileSupplier().getSourceFile();
+        Path compileFolder = info.getCodeFileSupplier().getCompileFolder();
         Path configFolder = fileSupplier.getConfigurationFolder();
         int compilationResult = 0;
         try {
@@ -87,9 +87,9 @@ public class CodingProblemTester implements ProblemTester {
                     TestingLogging.logger.fine("Temp file for output was not found");
                     return VerdictInfo.VERDICT_FAIL;
                 }
-                Path inputFile = fileSupplier.getTestInputFile(info.getProblemFolder(), type, testNumber);
-                Path answerFile = fileSupplier.getTestAnswerFile(info.getProblemFolder(), type, testNumber);
-                Path decisionFile = fileSupplier.getSubmissionCompileFile(info.getSubmissionFolder());
+                Path inputFile = info.getProblemFileSupplier().getTestInputFile(type, testNumber);
+                Path answerFile = info.getProblemFileSupplier().getTestAnswerFile(type, testNumber);
+                Path decisionFile = info.getCodeFileSupplier().getCompileFile();
                 if (Files.notExists(inputFile) || Files.notExists(answerFile) || Files.notExists(decisionFile)) {
                     TestingLogging.logger.fine("Input file or answer file or decision file were not found");
                     return VerdictInfo.VERDICT_FAIL;

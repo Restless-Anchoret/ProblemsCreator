@@ -12,7 +12,8 @@ public class TestingInfo {
     private EvaluationSystem evaluationSystem;
     private LanguageToolkit languageToolkit;
     private Checker checker;
-    private String submissionFolder, problemFolder;
+    private CodeFileSupplier codeFileSupplier;
+    private ProblemFileSupplier problemFileSupplier;
     private boolean pretestsOnly;
     private Integer timeLimit;
     private Short memoryLimit;
@@ -21,15 +22,15 @@ public class TestingInfo {
 
     public TestingInfo(TestResultHandler testResultHandler, ProblemTester problemTester,
             EvaluationSystem evaluationSystem, LanguageToolkit languageToolkit,Checker checker,
-            String submissionFolder, String problemFolder, boolean pretestsOnly, Integer timeLimit,
+            CodeFileSupplier codeFileSupplier, ProblemFileSupplier problemFileSupplier, boolean pretestsOnly, Integer timeLimit,
             Short memoryLimit, TestTable testTable) {
         this.testResultHandler = testResultHandler;
         this.problemTester = problemTester;
         this.evaluationSystem = evaluationSystem;
         this.languageToolkit = languageToolkit;
         this.checker = checker;
-        this.submissionFolder = submissionFolder;
-        this.problemFolder = problemFolder;
+        this.codeFileSupplier = codeFileSupplier;
+        this.problemFileSupplier = problemFileSupplier;
         this.pretestsOnly = pretestsOnly;
         this.timeLimit = timeLimit;
         this.memoryLimit = memoryLimit;
@@ -56,12 +57,12 @@ public class TestingInfo {
         return checker;
     }
 
-    public String getSubmissionFolder() {
-        return submissionFolder;
+    public CodeFileSupplier getCodeFileSupplier() {
+        return codeFileSupplier;
     }
 
-    public String getProblemFolder() {
-        return problemFolder;
+    public ProblemFileSupplier getProblemFileSupplier() {
+        return problemFileSupplier;
     }
 
     public boolean isPretestsOnly() {
