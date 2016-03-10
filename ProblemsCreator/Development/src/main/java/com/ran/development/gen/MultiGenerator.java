@@ -3,7 +3,6 @@ package com.ran.development.gen;
 import com.ran.development.util.DevelopmentResult;
 import com.ran.development.util.DevelopmentListenerSupport;
 import com.ran.development.logging.DevelopmentLogging;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
@@ -14,6 +13,7 @@ import java.util.concurrent.FutureTask;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import com.ran.development.util.DevelopmentListener;
+import java.nio.file.Files;
 
 public class MultiGenerator {
     
@@ -82,7 +82,7 @@ public class MultiGenerator {
             Path path = paths[index - 1];
             long start = System.currentTimeMillis();
             Thread thread = null;
-            try (OutputStream output = new FileOutputStream(path.toFile())) {
+            try (OutputStream output = Files.newOutputStream(path)) {
                 generator.setOutput(output);
                 FutureTask<DevelopmentResult> futureTask = new FutureTask<>(new GeneratingTask(generator, index, arguments));
                 thread = new Thread(futureTask);

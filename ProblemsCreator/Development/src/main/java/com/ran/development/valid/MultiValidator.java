@@ -4,9 +4,9 @@ import com.ran.development.logging.DevelopmentLogging;
 import com.ran.development.util.DevelopmentListener;
 import com.ran.development.util.DevelopmentListenerSupport;
 import com.ran.development.util.DevelopmentResult;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -71,7 +71,7 @@ public class MultiValidator {
             Path path = paths[index - 1];
             long start = System.currentTimeMillis();
             Thread thread = null;
-            try (InputStream inputStream = new FileInputStream(path.toFile())) {
+            try (InputStream inputStream = Files.newInputStream(path)) {
                 validator.setInputStream(inputStream);
                 FutureTask<DevelopmentResult> futureTask = new FutureTask<>(new ValidatingTask(validator, index, arguments));
                 thread = new Thread(futureTask);
