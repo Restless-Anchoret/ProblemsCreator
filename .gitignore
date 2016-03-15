@@ -17,3 +17,9 @@ hs_err_pid*
 /ProblemsCreator/Development/target/
 /ProblemsCreator/Development/file_system/
 /ProblemsCreator/Development/development.log
+/GraduateWork/pictures
+/GraduateWork/*.aux
+/GraduateWork/*.log
+/GraduateWork/*.pdf
+/GraduateWork/*.gz
+/GraduateWork/*.toc
