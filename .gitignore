@@ -23,3 +23,5 @@ hs_err_pid*
 /GraduateWork/*.pdf
 /GraduateWork/*.gz
 /GraduateWork/*.toc
+/ProblemsCreator/Interaction/target/
+/ProblemsCreator/FileSystem/target/
