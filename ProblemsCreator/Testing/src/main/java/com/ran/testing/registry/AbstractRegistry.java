@@ -1,6 +1,7 @@
 package com.ran.testing.registry;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +21,7 @@ public abstract class AbstractRegistry<T> implements Registry<T> {
 
     @Override
     public Collection<String> getAvailableIds() {
-        return map.keySet();
+        return Collections.unmodifiableCollection(map.keySet());
     }
 
 }

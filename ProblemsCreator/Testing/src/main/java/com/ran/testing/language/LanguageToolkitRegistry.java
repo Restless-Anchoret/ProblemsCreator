@@ -5,12 +5,12 @@ import com.ran.testing.registry.Suppliers;
 
 public class LanguageToolkitRegistry extends AbstractRegistry<LanguageToolkit> {
 
-    private static final String javaId = "java";
+    private static final String JAVA_ID = "java";
     
     private static final LanguageToolkitRegistry registry = new LanguageToolkitRegistry();
     
     static {
-        registry.put(javaId, Suppliers.createSingletonSupplier(JavaLanguageToolkit.class));
+        registry.put(JAVA_ID, Suppliers.createSingletonSupplier(JavaLanguageToolkit.class));
     }
     
     public static LanguageToolkitRegistry registry() {
@@ -21,7 +21,7 @@ public class LanguageToolkitRegistry extends AbstractRegistry<LanguageToolkit> {
 
     @Override
     public LanguageToolkit getDefault() {
-        return get(javaId);
+        return get(JAVA_ID);
     }
     
 }

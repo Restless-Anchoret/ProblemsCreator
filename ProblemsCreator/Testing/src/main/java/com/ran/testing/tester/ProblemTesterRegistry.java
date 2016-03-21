@@ -5,12 +5,12 @@ import com.ran.testing.registry.Suppliers;
 
 public class ProblemTesterRegistry extends AbstractRegistry<ProblemTester> {
 
-    private static final String codingId = "coding";
+    private static final String CODING_ID = "coding";
     
     private static final ProblemTesterRegistry registry = new ProblemTesterRegistry();
     
     static {
-        registry.put(codingId, Suppliers.createSingletonSupplier(CodingProblemTester.class));
+        registry.put(CODING_ID, Suppliers.createSingletonSupplier(CodingProblemTester.class));
     }
     
     public static ProblemTesterRegistry registry() {
@@ -21,7 +21,7 @@ public class ProblemTesterRegistry extends AbstractRegistry<ProblemTester> {
 
     @Override
     public ProblemTester getDefault() {
-        return get(codingId);
+        return get(CODING_ID);
     }
     
 }
