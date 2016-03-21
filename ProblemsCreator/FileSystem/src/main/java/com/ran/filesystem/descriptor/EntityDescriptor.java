@@ -1,4 +1,4 @@
-package com.ran.filesystem.supplier;
+package com.ran.filesystem.descriptor;
 
 import com.ran.filesystem.logging.FileSystemLogging;
 import java.io.OutputStream;
@@ -66,7 +66,9 @@ public class EntityDescriptor {
             Document document = builder.newDocument();
             Node submissionElement = document.createElement(rootNodeName);
             for (Map.Entry<String, String> entry: properties.entrySet()) {
-                appendNode(submissionElement, document, entry.getKey(), entry.getValue());
+                Node newNode = document.createElement(entry.getKey());
+                newNode.appendChild(document.createTextNode(entry.getValue()));
+                submissionElement.appendChild(newNode);
             }
             document.appendChild(submissionElement);
             DOMImplementation implementation = document.getImplementation();
@@ -82,10 +84,20 @@ public class EntityDescriptor {
         }
     }
     
-    private void appendNode(Node mainNode, Document document, String nodeName, String nodeTextValue) {
-        Node newNode = document.createElement(nodeName);
-        newNode.appendChild(document.createTextNode(nodeTextValue));
-        mainNode.appendChild(newNode);
+    protected Integer parseInt(String number) {
+        try {
+            return Integer.parseInt(number);
+        } catch (NumberFormatException exception) {
+            return null;
+        }
+    }
+    
+    protected String intToString(Integer number) {
+        if (number == null) {
+            return "";
+        } else {
+            return number.toString();
+        }
     }
     
 }

@@ -25,3 +25,6 @@ hs_err_pid*
 /GraduateWork/*.toc
 /ProblemsCreator/Interaction/target/
 /ProblemsCreator/FileSystem/target/
+/ProblemsCreator/Interaction/file_system.log
+/ProblemsCreator/Interaction/src/main/java/com/ran/interaction/temp
+/ProblemsCreator/Interaction/file_system/

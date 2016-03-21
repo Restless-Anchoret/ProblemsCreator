@@ -1,32 +1,41 @@
 package com.ran.filesystem.supplier;
 
+import com.ran.filesystem.descriptor.AuthorDecisionDescriptor;
+import com.ran.filesystem.descriptor.ProblemDescriptor;
+import com.ran.filesystem.descriptor.SubmissionDescriptor;
+import com.ran.filesystem.descriptor.TestGroupDescriptor;
 import com.ran.filesystem.logging.FileSystemLogging;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
 public class StandardFileSupplier implements FileSupplier {
 
     private static final String FILE_SYSTEM_FOLDER = "file_system",
-                                SUBMISSIONS_FOLDER = "submissions",
-                                SUBMISSION_DESCRIPTOR_NAME = "submission.xml",
-                                CONFIGURATION_FOLDER = "config",
-                                TEMP_FILES_FOLDER = "temp",
                                 PROBLEMS_FOLDER = "problems",
-                                PROBLEM_DESCRIPTOR_NAME = "problem.xml",
                                 TESTS_FOLDER = "tests",
-                                TEST_GROUP_DESCRIPTOR = "test_group.xml",
                                 INPUT_FILE_NAME = "input.txt",
                                 ANSWER_FILE_NAME = "output.txt",
-                                AUTHOR_DECISIONS_FOLDER = "author_decisions",
+                                TEST_GROUP_DESCRIPTOR = "test_group.xml",
                                 CHECKER_FOLDER = "checker",
                                 GENERATORS_FOLDER = "generators",
                                 VALIDATORS_FOLDER = "validators",
-                                STATEMENT_FILE_NAME = "statement.pdf";
+                                AUTHOR_DECISIONS_FOLDER = "author_decisions",
+                                AUTHOR_DECISION_DESCRIPTOR = "author_decision.xml",
+                                PROBLEM_DESCRIPTOR_NAME = "problem.xml",
+                                STATEMENT_FILE_NAME = "statement.pdf",
+                                SUBMISSIONS_FOLDER = "submissions",
+                                SUBMISSION_DESCRIPTOR_NAME = "submission.xml",
+                                TEMP_FILES_FOLDER = "temp",
+                                CONFIGURATION_FOLDER = "config";
+    private static final List<String> TEST_GROUP_NAMES = Arrays.asList(
+            "samples", "pretests", "tests_1", "tests_2", "tests_3",
+            "tests_4", "tests_5", "tests_6", "tests_7", "tests_8");
     
     private String rootPath;
 
@@ -34,24 +43,48 @@ public class StandardFileSupplier implements FileSupplier {
         this.rootPath = Paths.get(path.toAbsolutePath().toString(), FILE_SYSTEM_FOLDER).toString();
     }
 
+    // ------------------------------------------------------------
+    // Methods to work with problem folders
+    // ------------------------------------------------------------
+    
     @Override
     public String addProblemFolder() {
         return null;
     }
+    
+    @Override
+    public void deleteProblemFolder(String problemFolder) {
+    }
 
     @Override
-    public Path getProblemFolder(String problemFolder) {
+    public List<String> getProblemsFolderNames() {
         return null;
     }
 
     @Override
-    public Path getProblemStatement(String problemFolder) {
+    public ProblemDescriptor getProblemDescriptor(String problemFolder) {
         return null;
     }
 
     @Override
-    public CodeSupplier getProblemCheckerCodeSupplier(String problemFolder) {
+    public Path getProblemStatementPath(String problemFolder) {
         return null;
+    }
+
+    // ------------------------------------------------------------
+    // Methods to work with tests folders
+    // ------------------------------------------------------------
+    
+    @Override
+    public void addTestInputFiles(String problemFolder, String testGroupType, List<Path> inputFilePaths) {
+    }
+
+    @Override
+    public void addTestAnswerFile(String problemFolder, String testGroupType, int testNumber, Path answerFilePath) {
+    }
+
+    @Override
+    public void deleteTests(String problemFolder, String testGroupType, List<Integer> testNumbers) {
     }
 
     @Override
@@ -63,10 +96,83 @@ public class StandardFileSupplier implements FileSupplier {
     public Path getTestAnswerFile(String problemFolder, String testGroupType, int testNumber) {
         return null;
     }
+    
+    @Override
+    public int getTestsQuantity(String problemFolder, String testGroupType) {
+        return 0;
+    }
 
+    @Override
+    public TestGroupDescriptor getTestGroupDescriptor(String problemFolder, String testGroupType) {
+        return null;
+    }
+    
+    // ------------------------------------------------------------
+    // Method to work with checker folders
+    // ------------------------------------------------------------
+    
+    @Override
+    public CodeSupplier getCheckerCodeSupplier(String problemFolder) {
+        return null;
+    }
+    
+    // ------------------------------------------------------------
+    // Methods to work with generator folders
+    // ------------------------------------------------------------
+
+    @Override
+    public String addGeneratorFolder(String problemFolder) {
+        return null;
+    }
+
+    @Override
+    public void deleteGeneratorFolder(String problemFolder, String generatorFolder) {
+    }
+
+    @Override
+    public List<String> getGeneratorFolders(String problemFolder) {
+        return null;
+    }
+
+    @Override
+    public CodeSupplier getGeneratorCodeSupplier(String problemFolder, String generatorFolder) {
+        return null;
+    }
+    
+    // ------------------------------------------------------------
+    // Methods to work with validator folders
+    // ------------------------------------------------------------
+    
+    @Override
+    public String addValidatorFolder(String problemFolder) {
+        return null;
+    }
+
+    @Override
+    public void deleteValidatorFolder(String problemFolder, String validatorFolder) {
+    }
+
+    @Override
+    public List<String> getValidatorFolders(String problemFolder) {
+        return null;
+    }
+
+    @Override
+    public CodeSupplier getValidatorCodeSupplier(String problemFolder, String validatorFolder) {
+        return null;
+    }
+    
+    // ------------------------------------------------------------
+    // Methods to work with author decisions folders
+    // ------------------------------------------------------------
+    
     @Override
     public String addAuthorDecisionFolder(String problemFolder) {
         return null;
+    }
+    
+    @Override
+    public void deleteAuthorDecisionFolder(String problemFolder, String authorDecisionFolder) {
     }
     
     @Override
@@ -75,10 +181,19 @@ public class StandardFileSupplier implements FileSupplier {
     }
 
     @Override
-    public CodeSupplier getAuthorDecisionCodeSupplier(String problemFolder) {
+    public CodeSupplier getAuthorDecisionCodeSupplier(String problemFolder, String authorDecisionFolder) {
         return null;
     }
 
+    @Override
+    public AuthorDecisionDescriptor getAuthorDecisionDescriptor(String problemFolder, String authorDecisionFolder) {
+        return null;
+    }
+    
+    // ------------------------------------------------------------
+    // Methods to work with submissions folders
+    // ------------------------------------------------------------
+    
     @Override
     public String addSubmissionFolder() {
         Path submissionsFolder = Paths.get(rootPath, SUBMISSIONS_FOLDER);
@@ -93,6 +208,10 @@ public class StandardFileSupplier implements FileSupplier {
         Path submissionDescriptorPath = Paths.get(newFolderPath.toString(), SUBMISSION_DESCRIPTOR_NAME);
         SubmissionDescriptor.getEmptySubmissionDescriptor(submissionDescriptorPath);
         return newFolderName;
+    }
+    
+    @Override
+    public void deleteSubmissionFolder(String submissionFolder) {
     }
     
     @Override
@@ -127,6 +246,10 @@ public class StandardFileSupplier implements FileSupplier {
         }
         return new StandardCodeSupplier(submissionFolderPath);
     }
+    
+    // ------------------------------------------------------------
+    // Methods to work with temp files folders
+    // ------------------------------------------------------------
 
     @Override
     public Path getTempFile() {
@@ -165,6 +288,10 @@ public class StandardFileSupplier implements FileSupplier {
             Files.deleteIfExists(path);
         });
     }
+    
+    // ------------------------------------------------------------
+    // Method to work with configuration folder
+    // ------------------------------------------------------------
 
     @Override
     public Path getConfigurationFolder() {

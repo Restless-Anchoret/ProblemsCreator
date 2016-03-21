@@ -1,0 +1,73 @@
+Структура главной папки в файловой системе:
+
+- file_system
+	- problems
+		- <Имя папки задачи>
+			- tests
+				- samples
+					- 1
+						input.txt
+						answer.txt
+					- 2
+						input.txt
+						answer.txt
+					...
+					test_group.xml
+				- pretests
+					...
+				- tests_1
+					...
+				...
+				- tests_8
+					...
+			- checker
+				- bin
+					<Скомпилированные файлы> // (Например, NewChecker.class, NewChecker$1.class и т. д.)
+				- src
+					<Файл класса чекера> // (Например, NewChecker.java)
+			- generators
+				- <Имя папки генератора>
+					- bin
+						<Скомпилированные файлы> // (Например, NewGenerator.class, NewGenerator$1.class и т. д.)
+					- src
+						<Файл класса генератора> // (Например, NewGenerator.java)
+				- <Имя папки генератора>
+					...
+			- validators
+				- <Имя папки валидатора>
+					- bin
+						<Скомпилированные файлы> // (Например, NewValidator.class, NewValidator$1.class и т. д.)
+					- src
+						<Файл класса валидатора> // (Например, NewValidator.java)
+				- <Имя папки валидатора>
+					...
+			- author_decisions
+				- <Имя папки авторского решения>
+					- bin
+						<Скомпилированные файлы> // (Например, Task.class, Task$1.class и т. д.)
+					- src
+						<Файл решения> // (Например, Task.java)
+					author_decision.xml
+				- <Имя папки авторского решения>
+					...
+				...
+			problem.xml
+			statement.pdf
+		- <Имя папки задачи>
+			...
+		...
+	- submissions
+		- <Имя папки посылки>
+			- bin
+				<Скомпилированные файлы> // (Например, Task.class, Task$1.class и т. д.)
+			- src
+				<Файл решения> // (Например, Task.java)
+			submission.xml
+		- <Имя папки посылки>
+			...
+		...
+	- temp
+		<Временные файлы> // (Например, 2356236325662.txt)
+	- config
+		java_problem.policy
+		<Другие конфигурационные файлы>
