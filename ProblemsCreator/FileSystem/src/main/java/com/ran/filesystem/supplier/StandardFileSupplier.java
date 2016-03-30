@@ -113,7 +113,12 @@ public class StandardFileSupplier implements FileSupplier {
     
     @Override
     public CodeSupplier getCheckerCodeSupplier(String problemFolder) {
-        return null;
+        Path checkerFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder,
+                CHECKER_FOLDER);
+        if (Files.notExists(checkerFolderPath)) {
+            return null;
+        }
+        return new StandardCodeSupplier(checkerFolderPath);
     }
     
     // ------------------------------------------------------------
@@ -168,26 +173,49 @@ public class StandardFileSupplier implements FileSupplier {
     
     @Override
     public String addAuthorDecisionFolder(String problemFolder) {
-        return null;
+        Path authorDecisionsFolder = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder,
+                AUTHOR_DECISIONS_FOLDER);
+        Path newFolderPath = FilesUtil.addNewNumberSubfolder(authorDecisionsFolder);
+        if (newFolderPath == null) {
+            return null;
+        }
+        Path authorDecisionDescriptorPath = Paths.get(newFolderPath.toString(), AUTHOR_DECISION_DESCRIPTOR);
+        AuthorDecisionDescriptor.getEmptyAuthorDecisionDescriptor(authorDecisionDescriptorPath);
+        return newFolderPath.getFileName().toString();
     }
     
     @Override
     public void deleteAuthorDecisionFolder(String problemFolder, String authorDecisionFolder) {
+        Path authorDecisionFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder,
+                AUTHOR_DECISIONS_FOLDER, authorDecisionFolder);
+        FilesUtil.deleteRecursively(authorDecisionFolderPath);
     }
     
     @Override
     public List<String> getAuthorDecisionsFolderNames(String problemFolder) {
-        return null;
+        Path authorDecisionFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder,
+                AUTHOR_DECISIONS_FOLDER);
+        return FilesUtil.getSubfolderNames(authorDecisionFolderPath);
     }
 
     @Override
     public CodeSupplier getAuthorDecisionCodeSupplier(String problemFolder, String authorDecisionFolder) {
-        return null;
+        Path authorDecisionFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder,
+                AUTHOR_DECISIONS_FOLDER, authorDecisionFolder);
+        if (Files.notExists(authorDecisionFolderPath)) {
+            return null;
+        }
+        return new StandardCodeSupplier(authorDecisionFolderPath);
     }
 
     @Override
     public AuthorDecisionDescriptor getAuthorDecisionDescriptor(String problemFolder, String authorDecisionFolder) {
-        return null;
+        Path descriptorPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder,
+                AUTHOR_DECISIONS_FOLDER, authorDecisionFolder, AUTHOR_DECISION_DESCRIPTOR);
+        if (Files.notExists(descriptorPath)) {
+            return null;
+        }
+        return AuthorDecisionDescriptor.getExistingAuthorDecisionDescriptor(descriptorPath);
     }
     
     // ------------------------------------------------------------
@@ -197,36 +225,25 @@ public class StandardFileSupplier implements FileSupplier {
     @Override
     public String addSubmissionFolder() {
         Path submissionsFolder = Paths.get(rootPath, SUBMISSIONS_FOLDER);
-        if (!FilesUtil.checkFolderExists(submissionsFolder)) {
-            return null;
-        }
-        String newFolderName = Integer.toString(FilesUtil.getMaximumFolderNameNumber(submissionsFolder) + 1);
-        Path newFolderPath = Paths.get(submissionsFolder.toString(), newFolderName);
-        if (!FilesUtil.checkFolderExists(newFolderPath)) {
+        Path newFolderPath = FilesUtil.addNewNumberSubfolder(submissionsFolder);
+        if (newFolderPath == null) {
             return null;
         }
         Path submissionDescriptorPath = Paths.get(newFolderPath.toString(), SUBMISSION_DESCRIPTOR_NAME);
         SubmissionDescriptor.getEmptySubmissionDescriptor(submissionDescriptorPath);
-        return newFolderName;
+        return newFolderPath.getFileName().toString();
     }
     
     @Override
     public void deleteSubmissionFolder(String submissionFolder) {
+        Path submissionFolderPath = Paths.get(rootPath, SUBMISSIONS_FOLDER, submissionFolder);
+        FilesUtil.deleteRecursively(submissionFolderPath);
     }
     
     @Override
     public List<String> getSubmissionsFolderNames() {
-        List<String> folderNames = new ArrayList<>();
         Path submissionsFolder = Paths.get(rootPath, SUBMISSIONS_FOLDER);
-        if (!FilesUtil.checkFolderExists(submissionsFolder)) {
-            return folderNames;
-        }
-        FilesUtil.processFolderContent(submissionsFolder, path -> {
-            if (Files.isDirectory(path)) {
-                folderNames.add(path.getFileName().toString());
-            }
-        });
-        return folderNames;
+        return FilesUtil.getSubfolderNames(submissionsFolder);
     }
     
     @Override
@@ -296,7 +313,9 @@ public class StandardFileSupplier implements FileSupplier {
     @Override
     public Path getConfigurationFolder() {
         Path configurationPath = Paths.get(rootPath, CONFIGURATION_FOLDER);
-        FilesUtil.checkFolderExists(configurationPath);
+        if (!FilesUtil.checkFolderExists(configurationPath)) {
+            return null;
+        }
         return configurationPath;
     }
     
