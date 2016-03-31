@@ -1,22 +1,18 @@
 package com.ran.interaction.frame;
 
+import com.ran.interaction.panels.ProblemsPanel;
+import com.ran.interaction.panels.SubmissionsPanel;
 import javax.swing.JFrame;
 
 public class MainFrame extends JFrame {
 
+    private static final String SUBMISSIONS = "Submissions";
+    private static final String PROBLEMS = "Problems";
+    
     public MainFrame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         initComponents();
-//        JPanel panel = new JPanel();
-//        JButton button = new JButton("Edit problem");
-//        button.addActionListener(event -> {
-//            new ProblemDialog(this, true).setVisible(true);
-//        });
-//        panel.add(button);
-//        tabbedPane.add(new JPanel());
-//        tabbedPane.add(panel);
-//        tabbedPane.setTitleAt(0, "Submissions");
-//        tabbedPane.setTitleAt(1, "Problems");
+        initCustomComponents();
     }
 
     @SuppressWarnings("unchecked")
@@ -32,11 +28,11 @@ public class MainFrame extends JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
+            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 769, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
+            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 547, Short.MAX_VALUE)
         );
 
         pack();
@@ -45,4 +41,25 @@ public class MainFrame extends JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTabbedPane tabbedPane;
     // End of variables declaration//GEN-END:variables
+
+    private SubmissionsPanel submissionsPanel;
+    private ProblemsPanel problemsPanel;
+
+    private void initCustomComponents() {
+        submissionsPanel = new SubmissionsPanel();
+        tabbedPane.add(submissionsPanel);
+        tabbedPane.setTitleAt(0, SUBMISSIONS);
+        problemsPanel = new ProblemsPanel();
+        tabbedPane.add(problemsPanel);
+        tabbedPane.setTitleAt(1, PROBLEMS);
+    }
+    
+    public SubmissionsPanel getSubmissionsPanel() {
+        return submissionsPanel;
+    }
+
+    public ProblemsPanel getProblemsPanel() {
+        return problemsPanel;
+    }
+    
 }
