@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -64,16 +65,32 @@ public class FilesUtil {
         return keeper.getNumber();
     }
     
-    public static Path addNewNumberSubfolder(Path folderPath) {
+    public static List<Path> addNewNumberSubfolders(Path folderPath, int foldersQuantity) {
         if (!FilesUtil.checkFolderExists(folderPath)) {
             return null;
         }
-        String newFolderName = Integer.toString(getMaximumFolderNameNumber(folderPath) + 1);
-        Path newFolderPath = Paths.get(folderPath.toString(), newFolderName);
-        if (!FilesUtil.checkFolderExists(newFolderPath)) {
+        List<Path> subfolderPaths = new ArrayList<>();
+        int maximumNumber = getMaximumFolderNameNumber(folderPath);
+        for (int i = 1; i <= foldersQuantity; i++) {
+            String newFolderName = Integer.toString(maximumNumber + i);
+            Path newFolderPath = Paths.get(folderPath.toString(), newFolderName);
+            subfolderPaths.add(newFolderPath);
+            if (!checkFolderExists(newFolderPath)) {
+                for (Path path: subfolderPaths) {
+                    deleteRecursively(path);
+                }
+                return null;
+            }
+        }
+        return subfolderPaths;
+    }
+    
+    public static Path addNewNumberSubfolder(Path folderPath) {
+        List<Path> paths = addNewNumberSubfolders(folderPath, 1);
+        if (paths == null) {
             return null;
         }
-        return newFolderPath;
+        return paths.get(0);
     }
     
     public static List<String> getSubfolderNames(Path folderPath) {
@@ -87,6 +104,20 @@ public class FilesUtil {
             }
         });
         return folderNames;
+    }
+    
+    public static void normailizeSubfolderNames(Path folderPath) {
+        List<String> folderNames = getSubfolderNames(folderPath);
+        Collections.sort(folderNames);
+        for (int i = 0; i < folderNames.size(); i++) {
+            Path subfolderPath = Paths.get(folderPath.toString(), folderNames.get(i));
+            Path newSubfolderPath = Paths.get(folderPath.toString(), Integer.toString(i + 1));
+            try {
+                Files.move(subfolderPath, newSubfolderPath);
+            } catch (IOException exception) {
+                FileSystemLogging.logger.log(Level.FINE, "IOException while renaming folders", exception);
+            }
+        }
     }
     
     public static void deleteRecursively(Path pathToDelete) {

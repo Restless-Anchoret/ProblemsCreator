@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -21,7 +19,7 @@ public class StandardFileSupplier implements FileSupplier {
                                 TESTS_FOLDER = "tests",
                                 INPUT_FILE_NAME = "input.txt",
                                 ANSWER_FILE_NAME = "output.txt",
-                                TEST_GROUP_DESCRIPTOR = "test_group.xml",
+                                TEST_GROUP_DESCRIPTOR_NAME = "test_group.xml",
                                 CHECKER_FOLDER = "checker",
                                 GENERATORS_FOLDER = "generators",
                                 VALIDATORS_FOLDER = "validators",
@@ -33,9 +31,6 @@ public class StandardFileSupplier implements FileSupplier {
                                 SUBMISSION_DESCRIPTOR_NAME = "submission.xml",
                                 TEMP_FILES_FOLDER = "temp",
                                 CONFIGURATION_FOLDER = "config";
-    private static final List<String> TEST_GROUP_NAMES = Arrays.asList(
-            "samples", "pretests", "tests_1", "tests_2", "tests_3",
-            "tests_4", "tests_5", "tests_6", "tests_7", "tests_8");
     
     private String rootPath;
 
@@ -49,26 +44,40 @@ public class StandardFileSupplier implements FileSupplier {
     
     @Override
     public String addProblemFolder() {
-        return null;
+        Path problemsFolder = Paths.get(rootPath, PROBLEMS_FOLDER);
+        Path newFolderPath = FilesUtil.addNewNumberSubfolder(problemsFolder);
+        if (newFolderPath == null) {
+            return null;
+        }
+        Path problemDescriptorPath = Paths.get(newFolderPath.toString(), PROBLEM_DESCRIPTOR_NAME);
+        ProblemDescriptor.getEmptyProblemDescriptor(problemDescriptorPath);
+        return newFolderPath.getFileName().toString();
     }
     
     @Override
     public void deleteProblemFolder(String problemFolder) {
+        Path problemFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder);
+        FilesUtil.deleteRecursively(problemFolderPath);
     }
 
     @Override
     public List<String> getProblemsFolderNames() {
-        return null;
+        Path problemsFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER);
+        return FilesUtil.getSubfolderNames(problemsFolderPath);
     }
 
     @Override
     public ProblemDescriptor getProblemDescriptor(String problemFolder) {
-        return null;
+        Path descriptorPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder, PROBLEM_DESCRIPTOR_NAME);
+        if (Files.notExists(descriptorPath)) {
+            return null;
+        }
+        return ProblemDescriptor.getExistingProblemDescriptor(descriptorPath);
     }
 
     @Override
     public Path getProblemStatementPath(String problemFolder) {
-        return null;
+        return Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder, STATEMENT_FILE_NAME);
     }
 
     // ------------------------------------------------------------
@@ -76,35 +85,95 @@ public class StandardFileSupplier implements FileSupplier {
     // ------------------------------------------------------------
     
     @Override
-    public void addTestInputFiles(String problemFolder, String testGroupType, List<Path> inputFilePaths) {
+    public boolean addTestInputFiles(String problemFolder, String testGroupType, List<Path> inputFilePaths) {
+        Path testGroupFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder,
+                    TESTS_FOLDER, testGroupType);
+        List<Path> paths = FilesUtil.addNewNumberSubfolders(testGroupFolderPath, inputFilePaths.size());
+        if (paths == null) {
+            return false;
+        }
+        try {
+            for (int i = 0; i < inputFilePaths.size(); i++) {
+                Path inputFilePath = inputFilePaths.get(i);
+                Path destinationPath = paths.get(i);
+                Files.copy(inputFilePath, destinationPath);
+            }
+            return true;
+        } catch (IOException exception) {
+            FileSystemLogging.logger.log(Level.FINE, "IOException while copying input test files", exception);
+            for (Path path: paths) {
+                FilesUtil.deleteRecursively(path);
+            }
+            return false;
+        }
     }
 
     @Override
-    public void addTestAnswerFile(String problemFolder, String testGroupType, int testNumber, Path answerFilePath) {
+    public boolean addTestAnswerFile(String problemFolder, String testGroupType, int testNumber, Path answerFilePath) {
+        Path testFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder,
+                    TESTS_FOLDER, testGroupType, Integer.toString(testNumber));
+        if (Files.notExists(testFolderPath)) {
+            FileSystemLogging.logger.fine("Trying to save answer file for not existing test");
+            return false;
+        }
+        Path destinationPath = Paths.get(testFolderPath.toString(), ANSWER_FILE_NAME);
+        try {
+            Files.copy(answerFilePath, destinationPath);
+            return true;
+        } catch (IOException exception) {
+            FileSystemLogging.logger.log(Level.FINE, "IOException while copying answer test file", exception);
+            return false;
+        }
     }
 
     @Override
     public void deleteTests(String problemFolder, String testGroupType, List<Integer> testNumbers) {
+        Path testGroupFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder,
+                    TESTS_FOLDER, testGroupType);
+        for (int testNumber: testNumbers) {
+            Path testPathFolder = Paths.get(testGroupFolderPath.toString(), Integer.toString(testNumber));
+            FilesUtil.deleteRecursively(testPathFolder);
+        }
+        FilesUtil.normailizeSubfolderNames(testGroupFolderPath);
     }
 
     @Override
     public Path getTestInputFile(String problemFolder, String testGroupType, int testNumber) {
-        return null;
+        Path testInputFilePath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder,
+                TESTS_FOLDER, testGroupType, Integer.toString(testNumber), INPUT_FILE_NAME);
+        if (Files.exists(testInputFilePath)) {
+            return testInputFilePath;
+        } else {
+            return null;
+        }
     }
 
     @Override
     public Path getTestAnswerFile(String problemFolder, String testGroupType, int testNumber) {
-        return null;
+        Path testAnswerFilePath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder,
+                TESTS_FOLDER, testGroupType, Integer.toString(testNumber), ANSWER_FILE_NAME);
+        if (Files.exists(testAnswerFilePath)) {
+            return testAnswerFilePath;
+        } else {
+            return null;
+        }
     }
     
     @Override
     public int getTestsQuantity(String problemFolder, String testGroupType) {
-        return 0;
+        Path testGroupFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder,
+                TESTS_FOLDER, testGroupType);
+        return FilesUtil.getMaximumFolderNameNumber(testGroupFolderPath);
     }
 
     @Override
     public TestGroupDescriptor getTestGroupDescriptor(String problemFolder, String testGroupType) {
-        return null;
+        Path descriptorPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder, TESTS_FOLDER,
+                testGroupType, TEST_GROUP_DESCRIPTOR_NAME);
+        if (Files.notExists(descriptorPath)) {
+            return null;
+        }
+        return TestGroupDescriptor.getExistingTestGroupDescriptor(descriptorPath);
     }
     
     // ------------------------------------------------------------
@@ -127,21 +196,35 @@ public class StandardFileSupplier implements FileSupplier {
 
     @Override
     public String addGeneratorFolder(String problemFolder) {
-        return null;
+        Path generatorsFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder, GENERATORS_FOLDER);
+        Path newFolderPath = FilesUtil.addNewNumberSubfolder(generatorsFolderPath);
+        if (newFolderPath == null) {
+            return null;
+        }
+        return newFolderPath.getFileName().toString();
     }
 
     @Override
     public void deleteGeneratorFolder(String problemFolder, String generatorFolder) {
+        Path generatorFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder, GENERATORS_FOLDER,
+                generatorFolder);
+        FilesUtil.deleteRecursively(generatorFolderPath);
     }
 
     @Override
     public List<String> getGeneratorFolders(String problemFolder) {
-        return null;
+        Path generatorsFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder, GENERATORS_FOLDER);
+        return FilesUtil.getSubfolderNames(generatorsFolderPath);
     }
 
     @Override
     public CodeSupplier getGeneratorCodeSupplier(String problemFolder, String generatorFolder) {
-        return null;
+        Path generatorFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder, GENERATORS_FOLDER,
+                generatorFolder);
+        if (Files.notExists(generatorFolderPath)) {
+            return null;
+        }
+        return new StandardCodeSupplier(generatorFolderPath);
     }
     
     // ------------------------------------------------------------
@@ -150,21 +233,35 @@ public class StandardFileSupplier implements FileSupplier {
     
     @Override
     public String addValidatorFolder(String problemFolder) {
-        return null;
+        Path validatorsFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder, VALIDATORS_FOLDER);
+        Path newFolderPath = FilesUtil.addNewNumberSubfolder(validatorsFolderPath);
+        if (newFolderPath == null) {
+            return null;
+        }
+        return newFolderPath.getFileName().toString();
     }
 
     @Override
     public void deleteValidatorFolder(String problemFolder, String validatorFolder) {
+        Path validatorFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder, VALIDATORS_FOLDER,
+                validatorFolder);
+        FilesUtil.deleteRecursively(validatorFolderPath);
     }
 
     @Override
     public List<String> getValidatorFolders(String problemFolder) {
-        return null;
+        Path validatorsFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder, VALIDATORS_FOLDER);
+        return FilesUtil.getSubfolderNames(validatorsFolderPath);
     }
 
     @Override
     public CodeSupplier getValidatorCodeSupplier(String problemFolder, String validatorFolder) {
-        return null;
+        Path validatorFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder, VALIDATORS_FOLDER,
+                validatorFolder);
+        if (Files.notExists(validatorFolderPath)) {
+            return null;
+        }
+        return new StandardCodeSupplier(validatorFolderPath);
     }
     
     // ------------------------------------------------------------
