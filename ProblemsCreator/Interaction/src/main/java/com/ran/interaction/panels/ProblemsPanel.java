@@ -10,25 +10,24 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.JPanel;
 
-public class SubmissionsPanel extends JPanel implements Publisher {
-
-    public static final String ADD = "add_submission";
-    public static final String RESUBMIT = "resubmit_submission";
-    public static final String DELETE = "delete_submission";
-    public static final String UPDATE = "update_submissions";
+public class ProblemsPanel extends JPanel implements Publisher {
+    
+    public static final String ADD = "add_problem";
+    public static final String EDIT = "edit_problem";
+    public static final String DELETE = "delete_problem";
+    public static final String UPDATE = "update_problems";
     
     private static final String NUMBER = "Number";
-    private static final String PROBLEM = "Problem";
-    private static final String EVALUATION = "Evaluation type";
-    private static final String COMPILATOR = "Compilator";
-    private static final String VERDICT = "Verdict";
-    private static final String DECISION_TIME = "Decision time";
+    private static final String NAME = "Name";
+    private static final String TIME_LIMIT = "Time limit";
+    private static final String MEMORY_LIMIT = "Memory limit";
+    private static final String CHECKER_TYPE = "Checker type";
     
     private static final Object[] TABLE_HEADERS = new Object[] {
-        NUMBER, PROBLEM, EVALUATION, COMPILATOR, VERDICT, DECISION_TIME
+        NUMBER, NAME, TIME_LIMIT, MEMORY_LIMIT, CHECKER_TYPE
     };
     
-    public SubmissionsPanel() {
+    public ProblemsPanel() {
         initComponents();
         initCustomComponents();
         setTableContent(new Object[][] { });
@@ -39,14 +38,22 @@ public class SubmissionsPanel extends JPanel implements Publisher {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        scrollPane = new javax.swing.JScrollPane();
-        tableSubmissions = new javax.swing.JTable();
         buttonAdd = new javax.swing.JButton();
-        buttonResubmit = new javax.swing.JButton();
+        buttonEdit = new javax.swing.JButton();
         buttonDelete = new javax.swing.JButton();
         buttonUpdate = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableProblems = new javax.swing.JTable();
 
-        tableSubmissions.setModel(new javax.swing.table.DefaultTableModel(
+        buttonAdd.setText("Add");
+
+        buttonEdit.setText("Edit");
+
+        buttonDelete.setText("Delete");
+
+        buttonUpdate.setText("Update");
+
+        tableProblems.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -54,16 +61,8 @@ public class SubmissionsPanel extends JPanel implements Publisher {
 
             }
         ));
-        tableSubmissions.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        scrollPane.setViewportView(tableSubmissions);
-
-        buttonAdd.setText("Add");
-
-        buttonResubmit.setText("Resubmit");
-
-        buttonDelete.setText("Delete");
-
-        buttonUpdate.setText("Update");
+        tableProblems.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(tableProblems);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -72,11 +71,11 @@ public class SubmissionsPanel extends JPanel implements Publisher {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 686, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(buttonAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonResubmit)
+                        .addComponent(buttonEdit)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonDelete)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -85,15 +84,15 @@ public class SubmissionsPanel extends JPanel implements Publisher {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonAdd)
-                    .addComponent(buttonResubmit)
+                    .addComponent(buttonEdit)
                     .addComponent(buttonDelete)
                     .addComponent(buttonUpdate))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -101,24 +100,24 @@ public class SubmissionsPanel extends JPanel implements Publisher {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonAdd;
     private javax.swing.JButton buttonDelete;
-    private javax.swing.JButton buttonResubmit;
+    private javax.swing.JButton buttonEdit;
     private javax.swing.JButton buttonUpdate;
-    private javax.swing.JScrollPane scrollPane;
-    private javax.swing.JTable tableSubmissions;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tableProblems;
     // End of variables declaration//GEN-END:variables
 
     private Map<String, Observer> observers = new HashMap<>();
     
     private void initCustomComponents() {
         buttonAdd.addActionListener(event -> getObserver(ADD).notify(ADD, null));
-        buttonResubmit.addActionListener(event -> getObserver(RESUBMIT).notify(RESUBMIT, null)); // Use parameter
+        buttonEdit.addActionListener(event -> getObserver(EDIT).notify(EDIT, null)); // Use parameter
         buttonDelete.addActionListener(event -> getObserver(DELETE).notify(DELETE, null)); // Use parameter
         buttonUpdate.addActionListener(event -> getObserver(UPDATE).notify(UPDATE, null));
     }
     
     @Override
     public List<String> getAvailableIds() {
-        return Arrays.asList(ADD, RESUBMIT, DELETE, UPDATE);
+        return Arrays.asList(ADD, EDIT, DELETE, UPDATE);
     }
     
     @Override
@@ -132,7 +131,7 @@ public class SubmissionsPanel extends JPanel implements Publisher {
     }
     
     public final void setTableContent(Object[][] content) {
-        tableSubmissions.setModel(new NotEditableTableModel(content, TABLE_HEADERS));
+        tableProblems.setModel(new NotEditableTableModel(content, TABLE_HEADERS));
 //        TableColumnModel columnModel = new DefaultTableColumnModel();
 //        for (int width: TABLE_COLUMN_WIDTHS) {
 //            columnModel.addColumn(new TableColumn(0, width));

@@ -19,11 +19,11 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="scrollPane" pref="659" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="686" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Component id="buttonAdd" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="buttonResubmit" min="-2" max="-2" attributes="0"/>
+                      <Component id="buttonEdit" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="buttonDelete" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
@@ -36,30 +36,50 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="buttonAdd" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="buttonResubmit" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="buttonEdit" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="buttonDelete" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="buttonUpdate" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="scrollPane" pref="444" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="419" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JScrollPane" name="scrollPane">
+    <Component class="javax.swing.JButton" name="buttonAdd">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Add"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="buttonEdit">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Edit"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="buttonDelete">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Delete"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="buttonUpdate">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Update"/>
+      </Properties>
+    </Component>
+    <Container class="javax.swing.JScrollPane" name="jScrollPane1">
       <AuxValues>
         <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
       </AuxValues>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTable" name="tableSubmissions">
+        <Component class="javax.swing.JTable" name="tableProblems">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="0" rowCount="0"/>
@@ -77,25 +97,5 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="buttonAdd">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Add"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="buttonResubmit">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Resubmit"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="buttonDelete">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Delete"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="buttonUpdate">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Update"/>
-      </Properties>
-    </Component>
   </SubComponents>
 </Form>
