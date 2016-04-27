@@ -3,7 +3,6 @@ package com.ran.interaction.controllers;
 import com.ran.filesystem.descriptor.ProblemDescriptor;
 import com.ran.filesystem.descriptor.SubmissionDescriptor;
 import com.ran.filesystem.supplier.FileSupplier;
-import com.ran.interaction.application.Application;
 import com.ran.interaction.frame.MainFrame;
 import com.ran.interaction.logging.InteractionLogging;
 import com.ran.interaction.panels.ProblemsPanel;
@@ -18,12 +17,12 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 public class MainController {
 
-    private Application application;
+    private ProblemsCreator creator;
     private MainFrame mainFrame;
 
     public void init() {
-        application = new Application();
-        application.init();
+        creator = new ProblemsCreator();
+        creator.init();
     }
     
     public void showFrame() {
@@ -47,8 +46,8 @@ public class MainController {
 
     private void configurateMainFrame(MainFrame mainFrame) {
         mainFrame.addWindowListener(new WindowAdapter() {
-            public void windowClosed(WindowEvent event) {
-                application.stop();
+            public void windowClosing(WindowEvent event) {
+                creator.stop();
             }
         });
         SubmissionsPanel submissionsPanel = mainFrame.getSubmissionsPanel();
@@ -78,7 +77,7 @@ public class MainController {
     }
     
     private void updateSubmissions(String id, Object parameter) {
-        FileSupplier fileSupplier = application.getFileSupplier();
+        FileSupplier fileSupplier = creator.getFileSupplier();
         List<String> submissionNumbers = fileSupplier.getSubmissionsFolderNames();
         int submissionsQuantity = submissionNumbers.size();
         Object[][] content = new Object[submissionsQuantity][];
@@ -112,7 +111,7 @@ public class MainController {
     }
     
     private void updateProblems(String id, Object parameter) {
-        FileSupplier fileSupplier = application.getFileSupplier();
+        FileSupplier fileSupplier = creator.getFileSupplier();
         List<String> problemNumbers = fileSupplier.getProblemsFolderNames();
         int problemsQuantity = problemNumbers.size();
         Object[][] content = new Object[problemsQuantity][];
