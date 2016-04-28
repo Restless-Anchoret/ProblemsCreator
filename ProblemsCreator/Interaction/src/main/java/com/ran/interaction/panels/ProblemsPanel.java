@@ -25,7 +25,7 @@ public class ProblemsPanel extends JPanel implements Publisher {
     private static final String MEMORY_LIMIT = "Memory limit";
     private static final String CHECKER_TYPE = "Checker type";
     
-    private static final Object[] TABLE_HEADERS = new Object[] {
+    private static final Object[] TABLE_HEADERS = {
         NUMBER, NAME, TIME_LIMIT, MEMORY_LIMIT, CHECKER_TYPE
     };
     

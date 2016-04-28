@@ -27,7 +27,7 @@ public class SubmissionsPanel extends JPanel implements Publisher {
     private static final String VERDICT = "Verdict";
     private static final String DECISION_TIME = "Decision time";
     
-    private static final Object[] TABLE_HEADERS = new Object[] {
+    private static final Object[] TABLE_HEADERS = {
         NUMBER, PROBLEM, EVALUATION, COMPILATOR, VERDICT, DECISION_TIME
     };
     
