@@ -1,6 +1,5 @@
 package com.ran.interaction.panels;
 
-import com.ran.interaction.components.NotEditableTableModel;
 import com.ran.interaction.observer.EmptyObserver;
 import com.ran.interaction.observer.Observer;
 import com.ran.interaction.observer.Publisher;
@@ -45,8 +44,7 @@ public class ProblemsPanel extends JPanel implements Publisher {
         buttonEdit = new javax.swing.JButton();
         buttonDelete = new javax.swing.JButton();
         buttonUpdate = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tableProblems = new javax.swing.JTable();
+        tableProblems = new com.ran.interaction.components.RowsTable();
 
         buttonAdd.setText("Add");
 
@@ -56,17 +54,6 @@ public class ProblemsPanel extends JPanel implements Publisher {
 
         buttonUpdate.setText("Update");
 
-        tableProblems.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        tableProblems.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane1.setViewportView(tableProblems);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -74,14 +61,14 @@ public class ProblemsPanel extends JPanel implements Publisher {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 686, Short.MAX_VALUE)
+                    .addComponent(tableProblems, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(buttonAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonEdit)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonDelete)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 435, Short.MAX_VALUE)
                         .addComponent(buttonUpdate)))
                 .addContainerGap())
         );
@@ -95,7 +82,7 @@ public class ProblemsPanel extends JPanel implements Publisher {
                     .addComponent(buttonDelete)
                     .addComponent(buttonUpdate))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
+                .addComponent(tableProblems, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -105,27 +92,22 @@ public class ProblemsPanel extends JPanel implements Publisher {
     private javax.swing.JButton buttonDelete;
     private javax.swing.JButton buttonEdit;
     private javax.swing.JButton buttonUpdate;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tableProblems;
+    private com.ran.interaction.components.RowsTable tableProblems;
     // End of variables declaration//GEN-END:variables
 
     private Map<String, Observer> observers = new HashMap<>();
     
     private void initCustomComponents() {
         buttonAdd.addActionListener(event -> getObserver(ADD).notify(ADD, null));
-        buttonEdit.addActionListener(event -> {
-            if (tableProblems.getSelectedRow() != -1) {
-                getObserver(EDIT).notify(EDIT, tableProblems.getModel()
-                        .getValueAt(tableProblems.getSelectedRow(), 0));
-            }
-        });
-        buttonDelete.addActionListener(event -> {
-            if (tableProblems.getSelectedRow() != -1) {
-                getObserver(DELETE).notify(DELETE, tableProblems.getModel()
-                        .getValueAt(tableProblems.getSelectedRow(), 0));
-            }
-        });
+        buttonEdit.addActionListener(event -> callObserverIfRowIsSelected(EDIT));
+        buttonDelete.addActionListener(event -> callObserverIfRowIsSelected(DELETE));
         buttonUpdate.addActionListener(event -> getObserver(UPDATE).notify(UPDATE, null));
+    }
+    
+    private void callObserverIfRowIsSelected(String id) {
+        if (tableProblems.getSelectedIdentifier() != null) {
+            getObserver(id).notify(id, tableProblems.getSelectedIdentifier());
+        }
     }
     
     @Override
@@ -144,12 +126,7 @@ public class ProblemsPanel extends JPanel implements Publisher {
     }
     
     public final void setTableContent(Object[][] content) {
-        tableProblems.setModel(new NotEditableTableModel(content, TABLE_HEADERS));
-//        TableColumnModel columnModel = new DefaultTableColumnModel();
-//        for (int width: TABLE_COLUMN_WIDTHS) {
-//            columnModel.addColumn(new TableColumn(0, width));
-//        }
-//        tableSubmissions.setColumnModel(columnModel);
+        tableProblems.setTableContent(content, TABLE_HEADERS);
     }
     
 }

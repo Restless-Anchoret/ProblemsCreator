@@ -98,25 +98,18 @@ public class MainController {
     private void updateSubmissions(String id, Object parameter) {
         FileSupplier fileSupplier = creator.getFileSupplier();
         List<String> submissionNumbers = fileSupplier.getSubmissionsFolderNames();
-        int submissionsQuantity = submissionNumbers.size();
-        Object[][] content = new Object[submissionsQuantity][];
-        for (int i = 0; i < submissionsQuantity; i++) {
-            String number = submissionNumbers.get(i);
+        Object[][] content = SwingUtil.prepareTableContent(submissionNumbers, (number, row) -> {
+            row.add(number);
             SubmissionDescriptor descriptor = fileSupplier.getSubmissionDescriptor(number);
             String problemNumber = descriptor.getProblemName();
-            String problemName = "";
-            if (fileSupplier.getProblemsFolderNames().contains(problemNumber)) {
-                problemName = fileSupplier.getProblemDescriptor(problemNumber).getProblemName();
-            }
-            String evaluationType = descriptor.getEvaluationType();
-            String compilator = descriptor.getCompilatorName();
-            String verdict = descriptor.getVerdict();
+            row.add(fileSupplier.getProblemsFolderNames().contains(problemNumber) ?
+                    fileSupplier.getProblemDescriptor(problemNumber).getProblemName() : "");
+            row.add(descriptor.getEvaluationType());
+            row.add(descriptor.getCompilatorName());
+            row.add(descriptor.getVerdict());
             Integer decisionTime = descriptor.getDecisionTime();
-            String decisionTimeLine = (decisionTime == null ? "" : decisionTime + " ms");
-            content[i] = new Object[] {
-                number, problemName, evaluationType, compilator, verdict, decisionTime
-            };
-        }
+            row.add(decisionTime == null ? "" : decisionTime + " ms");
+        });
         mainFrame.getSubmissionsPanel().setTableContent(content);
     }
     
@@ -141,19 +134,14 @@ public class MainController {
     private void updateProblems(String id, Object parameter) {
         FileSupplier fileSupplier = creator.getFileSupplier();
         List<String> problemNumbers = fileSupplier.getProblemsFolderNames();
-        int problemsQuantity = problemNumbers.size();
-        Object[][] content = new Object[problemsQuantity][];
-        for (int i = 0; i < problemsQuantity; i++) {
-            String number = problemNumbers.get(i);
+        Object[][] content = SwingUtil.prepareTableContent(problemNumbers, (number, row) -> {
+            row.add(number);
             ProblemDescriptor descriptor = fileSupplier.getProblemDescriptor(number);
-            String problemName = descriptor.getProblemName();
-            String timeLimit = descriptor.getTimeLimit() + "";
-            String memoryLimit = descriptor.getMemoryLimit() + "";
-            String checkerType = descriptor.getCheckerType();
-            content[i] = new Object[] {
-                number, problemName, timeLimit, memoryLimit, checkerType
-            };
-        }
+            row.add(descriptor.getProblemName());
+            row.add(descriptor.getTimeLimit() + "");
+            row.add(descriptor.getMemoryLimit() + "");
+            row.add(descriptor.getCheckerType());
+        });
         mainFrame.getProblemsPanel().setTableContent(content);
     }
 

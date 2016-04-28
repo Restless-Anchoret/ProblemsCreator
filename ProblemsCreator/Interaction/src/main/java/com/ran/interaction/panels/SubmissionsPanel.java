@@ -1,6 +1,5 @@
 package com.ran.interaction.panels;
 
-import com.ran.interaction.components.NotEditableTableModel;
 import com.ran.interaction.observer.EmptyObserver;
 import com.ran.interaction.observer.Observer;
 import com.ran.interaction.observer.Publisher;
@@ -43,24 +42,12 @@ public class SubmissionsPanel extends JPanel implements Publisher {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        scrollPane = new javax.swing.JScrollPane();
-        tableSubmissions = new javax.swing.JTable();
         buttonAdd = new javax.swing.JButton();
         buttonResubmit = new javax.swing.JButton();
         buttonDelete = new javax.swing.JButton();
         buttonUpdate = new javax.swing.JButton();
         buttonViewCode = new javax.swing.JButton();
-
-        tableSubmissions.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        tableSubmissions.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        scrollPane.setViewportView(tableSubmissions);
+        tableSubmissions = new com.ran.interaction.components.RowsTable();
 
         buttonAdd.setText("Add");
 
@@ -79,7 +66,7 @@ public class SubmissionsPanel extends JPanel implements Publisher {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE)
+                    .addComponent(tableSubmissions, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(buttonAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -88,7 +75,7 @@ public class SubmissionsPanel extends JPanel implements Publisher {
                         .addComponent(buttonViewCode)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonDelete)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 280, Short.MAX_VALUE)
                         .addComponent(buttonUpdate)))
                 .addContainerGap())
         );
@@ -103,7 +90,7 @@ public class SubmissionsPanel extends JPanel implements Publisher {
                     .addComponent(buttonUpdate)
                     .addComponent(buttonViewCode))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
+                .addComponent(tableSubmissions, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -114,8 +101,7 @@ public class SubmissionsPanel extends JPanel implements Publisher {
     private javax.swing.JButton buttonResubmit;
     private javax.swing.JButton buttonUpdate;
     private javax.swing.JButton buttonViewCode;
-    private javax.swing.JScrollPane scrollPane;
-    private javax.swing.JTable tableSubmissions;
+    private com.ran.interaction.components.RowsTable tableSubmissions;
     // End of variables declaration//GEN-END:variables
 
     private Map<String, Observer> observers = new HashMap<>();
@@ -129,9 +115,8 @@ public class SubmissionsPanel extends JPanel implements Publisher {
     }
     
     private void callObserverIfRowIsSelected(String id) {
-        if (tableSubmissions.getSelectedRow() != -1) {
-            getObserver(id).notify(id, tableSubmissions.getModel()
-                    .getValueAt(tableSubmissions.getSelectedRow(), 0));
+        if (tableSubmissions.getSelectedIdentifier() != null) {
+            getObserver(id).notify(id, tableSubmissions.getSelectedIdentifier());
         }
     }
     
@@ -151,7 +136,7 @@ public class SubmissionsPanel extends JPanel implements Publisher {
     }
     
     public final void setTableContent(Object[][] content) {
-        tableSubmissions.setModel(new NotEditableTableModel(content, TABLE_HEADERS));
+        tableSubmissions.setTableContent(content, TABLE_HEADERS);
     }
     
 }
