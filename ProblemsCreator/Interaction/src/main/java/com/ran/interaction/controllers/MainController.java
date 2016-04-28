@@ -11,6 +11,7 @@ import com.ran.interaction.support.SwingUtil;
 import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.Level;
 import javax.swing.JOptionPane;
@@ -83,7 +84,11 @@ public class MainController {
     }
     
     private void viewSubmissionCode(String id, Object parameter) {
-        
+        String submissionFolder = parameter.toString();
+        Path sourceFilePath = creator.getFileSupplier()
+                .getSubmissionCodeSupplier(submissionFolder).getSourceFile();
+        FileEditorController editorController = new FileEditorController();
+        editorController.showDialog(sourceFilePath, true);
     }
     
     private void deleteSubmission(String id, Object parameter) {
