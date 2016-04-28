@@ -24,10 +24,10 @@ public class ProblemDescriptor extends EntityDescriptor {
 
     private ProblemDescriptor(Path path) {
         super(path, ROOT_ELEMENT);
-        setProperty(PROBLEM_NAME, "");
-        setProperty(TIME_LIMIT, "");
-        setProperty(MEMORY_LIMIT, "");
-        setProperty(CHECKER_TYPE, "");
+        setProperty(PROBLEM_NAME, "New problem");
+        setProperty(TIME_LIMIT, "1000");
+        setProperty(MEMORY_LIMIT, "64");
+        setProperty(CHECKER_TYPE, "match");
     }
     
     public String getProblemName() {

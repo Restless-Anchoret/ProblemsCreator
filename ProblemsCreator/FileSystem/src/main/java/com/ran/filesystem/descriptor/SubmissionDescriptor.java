@@ -5,7 +5,6 @@ import java.nio.file.Path;
 public class SubmissionDescriptor extends EntityDescriptor {
 
     private static final String ROOT_ELEMENT = "submission",
-//                                SUBMISSION_NAME = "name",
                                 PROBLEM_NAME = "problem",
                                 EVALUATION_TYPE = "evaluation",
                                 COMPILATOR_NAME = "compilator",
@@ -29,7 +28,6 @@ public class SubmissionDescriptor extends EntityDescriptor {
 
     private SubmissionDescriptor(Path path) {
         super(path, ROOT_ELEMENT);
-//        setProperty(SUBMISSION_NAME, "");
         setProperty(PROBLEM_NAME, "");
         setProperty(EVALUATION_TYPE, "");
         setProperty(COMPILATOR_NAME, "");
@@ -39,14 +37,6 @@ public class SubmissionDescriptor extends EntityDescriptor {
         setProperty(DECISION_MEMORY, "");
         setProperty(POINTS, "");
     }
-
-//    public String getSubmissionName() {
-//        return getProperty(SUBMISSION_NAME);
-//    }
-//    
-//    public void setSubmissionName(String submissionName) {
-//        setProperty(SUBMISSION_NAME, submissionName);
-//    }
 
     public String getProblemName() {
         return getProperty(PROBLEM_NAME);

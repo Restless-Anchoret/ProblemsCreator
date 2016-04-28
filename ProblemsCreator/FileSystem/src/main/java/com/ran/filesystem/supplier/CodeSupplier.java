@@ -7,6 +7,7 @@ public interface CodeSupplier {
     Path getFolder();
     Path getSourceFolder();
     Path getSourceFile();
+    Path putSourceFile(Path sourceFile);
     Path getCompileFolder();
     Path getCompileFile();
 

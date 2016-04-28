@@ -48,6 +48,18 @@ public class StandardCodeSupplier implements CodeSupplier {
         }
         return null;
     }
+    
+    @Override
+    public Path putSourceFile(Path sourceFile) {
+        Path sourceFolderPath = getSourceFolder();
+        try {
+            Files.copy(sourceFile, sourceFolderPath.resolve(sourceFile.getFileName()));
+            return getSourceFile();
+        } catch (IOException exception) {
+            FileSystemLogging.logger.log(Level.FINE, "IOException while copying file", exception);
+            return null;
+        }
+    }
 
     @Override
     public Path getCompileFolder() {
