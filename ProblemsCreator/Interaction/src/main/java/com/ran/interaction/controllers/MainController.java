@@ -3,15 +3,17 @@ package com.ran.interaction.controllers;
 import com.ran.filesystem.descriptor.ProblemDescriptor;
 import com.ran.filesystem.descriptor.SubmissionDescriptor;
 import com.ran.filesystem.supplier.FileSupplier;
-import com.ran.interaction.frame.MainFrame;
+import com.ran.interaction.windows.MainFrame;
 import com.ran.interaction.logging.InteractionLogging;
 import com.ran.interaction.panels.ProblemsPanel;
 import com.ran.interaction.panels.SubmissionsPanel;
+import com.ran.interaction.support.SwingUtil;
 import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.logging.Level;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -53,7 +55,8 @@ public class MainController {
         SubmissionsPanel submissionsPanel = mainFrame.getSubmissionsPanel();
         updateSubmissions(null, null);
         submissionsPanel.subscribe(SubmissionsPanel.ADD, this::addSubmission);
-        submissionsPanel.subscribe(SubmissionsPanel.RESUBMIT, this::resubmitSubmission);
+        submissionsPanel.subscribe(SubmissionsPanel.RESUBMIT, this::submitSubmission);
+        submissionsPanel.subscribe(SubmissionsPanel.VIEW_CODE, this::viewSubmissionCode);
         submissionsPanel.subscribe(SubmissionsPanel.DELETE, this::deleteSubmission);
         submissionsPanel.subscribe(SubmissionsPanel.UPDATE, this::updateSubmissions);
         ProblemsPanel problemsPanel = mainFrame.getProblemsPanel();
@@ -65,15 +68,31 @@ public class MainController {
     }
     
     private void addSubmission(String id, Object parameter) {
+        SubmissionCreationController creationController = new SubmissionCreationController();
+        creationController.setFileSupplier(creator.getFileSupplier());
+        creationController.showDialog();
+        String submissionFolder = creationController.getSubmissionFolder();
+        if (submissionFolder != null) {
+            updateSubmissions(null, null);
+            submitSubmission(null, submissionFolder);
+        }
+    }
+    
+    private void submitSubmission(String id, Object parameter) {
         
     }
     
-    private void resubmitSubmission(String id, Object parameter) {
+    private void viewSubmissionCode(String id, Object parameter) {
         
     }
     
     private void deleteSubmission(String id, Object parameter) {
-        
+        int answer = SwingUtil.showYesNoDialog(mainFrame,
+                SubmissionsPanel.DELETING_MESSAGE, SubmissionsPanel.DELETING_TITLE);
+        if (answer == JOptionPane.YES_OPTION) {
+            creator.getFileSupplier().deleteSubmissionFolder(parameter.toString());
+            updateSubmissions(null, null);
+        }
     }
     
     private void updateSubmissions(String id, Object parameter) {
@@ -85,7 +104,10 @@ public class MainController {
             String number = submissionNumbers.get(i);
             SubmissionDescriptor descriptor = fileSupplier.getSubmissionDescriptor(number);
             String problemNumber = descriptor.getProblemName();
-            String problemName = fileSupplier.getProblemDescriptor(problemNumber).getProblemName();
+            String problemName = "";
+            if (fileSupplier.getProblemsFolderNames().contains(problemNumber)) {
+                problemName = fileSupplier.getProblemDescriptor(problemNumber).getProblemName();
+            }
             String evaluationType = descriptor.getEvaluationType();
             String compilator = descriptor.getCompilatorName();
             String verdict = descriptor.getVerdict();
@@ -99,7 +121,8 @@ public class MainController {
     }
     
     private void addProblem(String id, Object parameter) {
-        
+        creator.getFileSupplier().addProblemFolder();
+        updateProblems(null, null);
     }
     
     private void editProblem(String id, Object parameter) {
@@ -107,7 +130,12 @@ public class MainController {
     }
     
     private void deleteProblem(String id, Object parameter) {
-        
+        int answer = SwingUtil.showYesNoDialog(mainFrame,
+                ProblemsPanel.DELETING_MESSAGE, ProblemsPanel.DELETING_TITLE);
+        if (answer == JOptionPane.YES_OPTION) {
+            creator.getFileSupplier().deleteProblemFolder(parameter.toString());
+            updateProblems(null, null);
+        }
     }
     
     private void updateProblems(String id, Object parameter) {

@@ -25,6 +25,8 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="buttonResubmit" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
+                      <Component id="buttonViewCode" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="buttonDelete" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="buttonUpdate" min="-2" max="-2" attributes="0"/>
@@ -43,6 +45,7 @@
                   <Component id="buttonResubmit" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="buttonDelete" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="buttonUpdate" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="buttonViewCode" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="scrollPane" pref="444" max="32767" attributes="0"/>
@@ -95,6 +98,11 @@
     <Component class="javax.swing.JButton" name="buttonUpdate">
       <Properties>
         <Property name="text" type="java.lang.String" value="Update"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="buttonViewCode">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="View code"/>
       </Properties>
     </Component>
   </SubComponents>

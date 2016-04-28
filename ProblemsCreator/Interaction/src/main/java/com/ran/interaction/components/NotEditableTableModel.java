@@ -13,6 +13,4 @@ public class NotEditableTableModel extends DefaultTableModel {
         return false;
     }
     
-    
-    
 }

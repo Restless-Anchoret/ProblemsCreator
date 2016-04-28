@@ -16,6 +16,10 @@ public class SubmissionsPanel extends JPanel implements Publisher {
     public static final String RESUBMIT = "resubmit_submission";
     public static final String DELETE = "delete_submission";
     public static final String UPDATE = "update_submissions";
+    public static final String VIEW_CODE = "view_submission_code";
+    
+    public static final String DELETING_MESSAGE = "Are you sure, you want to delete this submission?";
+    public static final String DELETING_TITLE = "Deleting";
     
     private static final String NUMBER = "Number";
     private static final String PROBLEM = "Problem";
@@ -45,6 +49,7 @@ public class SubmissionsPanel extends JPanel implements Publisher {
         buttonResubmit = new javax.swing.JButton();
         buttonDelete = new javax.swing.JButton();
         buttonUpdate = new javax.swing.JButton();
+        buttonViewCode = new javax.swing.JButton();
 
         tableSubmissions.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -65,6 +70,8 @@ public class SubmissionsPanel extends JPanel implements Publisher {
 
         buttonUpdate.setText("Update");
 
+        buttonViewCode.setText("View code");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -77,6 +84,8 @@ public class SubmissionsPanel extends JPanel implements Publisher {
                         .addComponent(buttonAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonResubmit)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buttonViewCode)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonDelete)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -91,7 +100,8 @@ public class SubmissionsPanel extends JPanel implements Publisher {
                     .addComponent(buttonAdd)
                     .addComponent(buttonResubmit)
                     .addComponent(buttonDelete)
-                    .addComponent(buttonUpdate))
+                    .addComponent(buttonUpdate)
+                    .addComponent(buttonViewCode))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
                 .addContainerGap())
@@ -103,6 +113,7 @@ public class SubmissionsPanel extends JPanel implements Publisher {
     private javax.swing.JButton buttonDelete;
     private javax.swing.JButton buttonResubmit;
     private javax.swing.JButton buttonUpdate;
+    private javax.swing.JButton buttonViewCode;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JTable tableSubmissions;
     // End of variables declaration//GEN-END:variables
@@ -111,14 +122,22 @@ public class SubmissionsPanel extends JPanel implements Publisher {
     
     private void initCustomComponents() {
         buttonAdd.addActionListener(event -> getObserver(ADD).notify(ADD, null));
-        buttonResubmit.addActionListener(event -> getObserver(RESUBMIT).notify(RESUBMIT, null)); // Use parameter
-        buttonDelete.addActionListener(event -> getObserver(DELETE).notify(DELETE, null)); // Use parameter
+        buttonResubmit.addActionListener(event -> callObserverIfRowIsSelected(RESUBMIT));
+        buttonDelete.addActionListener(event -> callObserverIfRowIsSelected(DELETE));
+        buttonViewCode.addActionListener(event -> callObserverIfRowIsSelected(VIEW_CODE));
         buttonUpdate.addActionListener(event -> getObserver(UPDATE).notify(UPDATE, null));
+    }
+    
+    private void callObserverIfRowIsSelected(String id) {
+        if (tableSubmissions.getSelectedRow() != -1) {
+            getObserver(id).notify(id, tableSubmissions.getModel()
+                    .getValueAt(tableSubmissions.getSelectedRow(), 0));
+        }
     }
     
     @Override
     public List<String> getAvailableIds() {
-        return Arrays.asList(ADD, RESUBMIT, DELETE, UPDATE);
+        return Arrays.asList(ADD, RESUBMIT, DELETE, VIEW_CODE, UPDATE);
     }
     
     @Override
@@ -133,11 +152,6 @@ public class SubmissionsPanel extends JPanel implements Publisher {
     
     public final void setTableContent(Object[][] content) {
         tableSubmissions.setModel(new NotEditableTableModel(content, TABLE_HEADERS));
-//        TableColumnModel columnModel = new DefaultTableColumnModel();
-//        for (int width: TABLE_COLUMN_WIDTHS) {
-//            columnModel.addColumn(new TableColumn(0, width));
-//        }
-//        tableSubmissions.setColumnModel(columnModel);
     }
     
 }

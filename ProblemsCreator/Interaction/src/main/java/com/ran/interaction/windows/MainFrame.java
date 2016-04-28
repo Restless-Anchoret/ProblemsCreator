@@ -1,4 +1,4 @@
-package com.ran.interaction.frame;
+package com.ran.interaction.windows;
 
 import com.ran.interaction.panels.ProblemsPanel;
 import com.ran.interaction.panels.SubmissionsPanel;

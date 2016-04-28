@@ -17,6 +17,9 @@ public class ProblemsPanel extends JPanel implements Publisher {
     public static final String DELETE = "delete_problem";
     public static final String UPDATE = "update_problems";
     
+    public static final String DELETING_MESSAGE = "Are you sure, you want to delete this problem?";
+    public static final String DELETING_TITLE = "Deleting";
+    
     private static final String NUMBER = "Number";
     private static final String NAME = "Name";
     private static final String TIME_LIMIT = "Time limit";
@@ -110,8 +113,18 @@ public class ProblemsPanel extends JPanel implements Publisher {
     
     private void initCustomComponents() {
         buttonAdd.addActionListener(event -> getObserver(ADD).notify(ADD, null));
-        buttonEdit.addActionListener(event -> getObserver(EDIT).notify(EDIT, null)); // Use parameter
-        buttonDelete.addActionListener(event -> getObserver(DELETE).notify(DELETE, null)); // Use parameter
+        buttonEdit.addActionListener(event -> {
+            if (tableProblems.getSelectedRow() != -1) {
+                getObserver(EDIT).notify(EDIT, tableProblems.getModel()
+                        .getValueAt(tableProblems.getSelectedRow(), 0));
+            }
+        });
+        buttonDelete.addActionListener(event -> {
+            if (tableProblems.getSelectedRow() != -1) {
+                getObserver(DELETE).notify(DELETE, tableProblems.getModel()
+                        .getValueAt(tableProblems.getSelectedRow(), 0));
+            }
+        });
         buttonUpdate.addActionListener(event -> getObserver(UPDATE).notify(UPDATE, null));
     }
     
