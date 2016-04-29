@@ -21,7 +21,7 @@ public class TestGroupDescriptor extends EntityDescriptor {
 
     private TestGroupDescriptor(Path path) {
         super(path, ROOT_ELEMENT);
-        setProperty(POINTS_FOR_TEST, "");
+        setProperty(POINTS_FOR_TEST, "0");
     }
     
     public Integer getPointsForTest() {

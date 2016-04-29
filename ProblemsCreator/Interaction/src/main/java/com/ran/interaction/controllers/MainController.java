@@ -8,6 +8,9 @@ import com.ran.interaction.logging.InteractionLogging;
 import com.ran.interaction.panels.ProblemsPanel;
 import com.ran.interaction.panels.SubmissionsPanel;
 import com.ran.interaction.support.SwingUtil;
+import com.ran.interaction.support.TestingUtil;
+import com.ran.testing.system.Verdict;
+import com.ran.testing.system.VerdictInfo;
 import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -80,7 +83,13 @@ public class MainController {
     }
     
     private void submitSubmission(String id, Object parameter) {
-        
+        String submissionFolder = parameter.toString();
+        SubmissionResultController resultController = new SubmissionResultController();
+        resultController.setFileSupplier(creator.getFileSupplier());
+        resultController.setTestingSystem(creator.getTestingSystem());
+        resultController.setSubmissionFolder(submissionFolder);
+        resultController.showDialog();
+        updateSubmissions(null, null);
     }
     
     private void viewSubmissionCode(String id, Object parameter) {
@@ -111,7 +120,8 @@ public class MainController {
                     fileSupplier.getProblemDescriptor(problemNumber).getProblemName() : "");
             row.add(descriptor.getEvaluationType());
             row.add(descriptor.getCompilatorName());
-            row.add(descriptor.getVerdict());
+            row.add(TestingUtil.getVerdictDescription(descriptor.getVerdict(),
+                    descriptor.getDecisionPoints(), descriptor.getWrongTestNumber()));
             Integer decisionTime = descriptor.getDecisionTime();
             row.add(decisionTime == null ? "" : decisionTime + " ms");
         });
@@ -124,7 +134,9 @@ public class MainController {
     }
     
     private void editProblem(String id, Object parameter) {
-        
+        ProblemController problemController = new ProblemController();
+        problemController.setProblemFolder(parameter.toString());
+        problemController.showDialog();
     }
     
     private void deleteProblem(String id, Object parameter) {

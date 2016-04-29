@@ -8,6 +8,7 @@ import com.ran.interaction.support.SwingUtil;
 import com.ran.interaction.windows.SubmissionCreationDialog;
 import com.ran.testing.evaluation.EvaluationSystemRegistry;
 import com.ran.testing.language.LanguageToolkitRegistry;
+import com.ran.testing.system.Verdict;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -81,6 +82,7 @@ public class SubmissionCreationController {
         descriptor.setProblemName(dialog.getProblemFolder());
         descriptor.setEvaluationType(dialog.getEvaluationSystem());
         descriptor.setCompilatorName(dialog.getCompilator());
+        descriptor.setVerdict(Verdict.TESTING.toString());
         descriptor.persist();
         dialog.dispose();
     }
