@@ -11,6 +11,9 @@ import javax.swing.JPanel;
 
 public class GeneralPanel extends JPanel implements Publisher {
 
+    public static final String SAVE = "save";
+    public static final String EXPORT = "export";
+    
     public GeneralPanel() {
         initComponents();
         initCustomComponents();
@@ -21,30 +24,91 @@ public class GeneralPanel extends JPanel implements Publisher {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        labelProblemName = new javax.swing.JLabel();
+        labelTimeLimit = new javax.swing.JLabel();
+        labelMemoryLimit = new javax.swing.JLabel();
+        textFieldMemoryLimit = new javax.swing.JTextField();
+        textFieldTimeLimit = new javax.swing.JTextField();
+        textFieldProblemName = new javax.swing.JTextField();
+        buttonSave = new javax.swing.JButton();
+        buttonExport = new javax.swing.JButton();
+
+        labelProblemName.setText("Problem name:");
+
+        labelTimeLimit.setText("Time limit (ms):");
+
+        labelMemoryLimit.setText("Memory limit (MB):");
+
+        buttonSave.setText("Save");
+
+        buttonExport.setText("Export");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(labelMemoryLimit)
+                    .addComponent(labelTimeLimit)
+                    .addComponent(labelProblemName))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(textFieldProblemName)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 69, Short.MAX_VALUE)
+                        .addComponent(buttonExport)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buttonSave))
+                    .addComponent(textFieldTimeLimit)
+                    .addComponent(textFieldMemoryLimit))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelProblemName)
+                    .addComponent(textFieldProblemName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelTimeLimit)
+                    .addComponent(textFieldTimeLimit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelMemoryLimit)
+                    .addComponent(textFieldMemoryLimit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(buttonSave)
+                    .addComponent(buttonExport))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonExport;
+    private javax.swing.JButton buttonSave;
+    private javax.swing.JLabel labelMemoryLimit;
+    private javax.swing.JLabel labelProblemName;
+    private javax.swing.JLabel labelTimeLimit;
+    private javax.swing.JTextField textFieldMemoryLimit;
+    private javax.swing.JTextField textFieldProblemName;
+    private javax.swing.JTextField textFieldTimeLimit;
     // End of variables declaration//GEN-END:variables
 
     private Map<String, Observer> observers = new HashMap<>();
     
     private void initCustomComponents() {
-        
+        buttonSave.addActionListener(event -> getObserver(SAVE).notify(SAVE, null));
+        buttonExport.addActionListener(event -> getObserver(EXPORT).notify(EXPORT, null));
     }
     
     @Override
     public List<String> getAvailableIds() {
-        return Arrays.asList();
+        return Arrays.asList(SAVE, EXPORT);
     }
     
     @Override
@@ -55,6 +119,38 @@ public class GeneralPanel extends JPanel implements Publisher {
     @Override
     public Observer getObserver(String id) {
         return observers.getOrDefault(id, EmptyObserver.getInstanse());
+    }
+    
+    public String getProblemName() {
+        return textFieldProblemName.getText();
+    }
+    
+    public void setProblemName(String problemName) {
+        textFieldProblemName.setText(problemName);
+    }
+    
+    public Integer getTimeLimit() {
+        return tryConvertToInt(textFieldTimeLimit.getText());
+    }
+    
+    public void setTimeLimit(Integer timeLimit) {
+        textFieldTimeLimit.setText(timeLimit.toString());
+    }
+    
+    public Integer getMemoryLimit() {
+        return tryConvertToInt(textFieldMemoryLimit.getText());
+    }
+    
+    public void setMemoryLimit(Integer memoryLimit) {
+        textFieldMemoryLimit.setText(memoryLimit.toString());
+    }
+    
+    private Integer tryConvertToInt(String line) {
+        try {
+            return Integer.parseInt(line);
+        } catch (NumberFormatException exception) {
+            return null;
+        }
     }
     
 }

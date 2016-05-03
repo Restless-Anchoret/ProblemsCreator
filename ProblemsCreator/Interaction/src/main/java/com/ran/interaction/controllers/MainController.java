@@ -135,8 +135,11 @@ public class MainController {
     
     private void editProblem(String id, Object parameter) {
         ProblemController problemController = new ProblemController();
+        problemController.setFileSupplier(creator.getFileSupplier());
         problemController.setProblemFolder(parameter.toString());
         problemController.showDialog();
+        updateProblems(null, null);
+        updateSubmissions(null, null);
     }
     
     private void deleteProblem(String id, Object parameter) {
