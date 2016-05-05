@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 public class GeneralPanel extends JPanel implements Publisher {
 
     public static final String SAVE = "save";
-    public static final String EXPORT = "export";
     
     public GeneralPanel() {
         initComponents();
@@ -31,7 +30,6 @@ public class GeneralPanel extends JPanel implements Publisher {
         textFieldTimeLimit = new javax.swing.JTextField();
         textFieldProblemName = new javax.swing.JTextField();
         buttonSave = new javax.swing.JButton();
-        buttonExport = new javax.swing.JButton();
 
         labelProblemName.setText("Problem name:");
 
@@ -40,8 +38,6 @@ public class GeneralPanel extends JPanel implements Publisher {
         labelMemoryLimit.setText("Memory limit (MB):");
 
         buttonSave.setText("Save");
-
-        buttonExport.setText("Export");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -57,9 +53,7 @@ public class GeneralPanel extends JPanel implements Publisher {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(textFieldProblemName)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 69, Short.MAX_VALUE)
-                        .addComponent(buttonExport)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(0, 142, Short.MAX_VALUE)
                         .addComponent(buttonSave))
                     .addComponent(textFieldTimeLimit)
                     .addComponent(textFieldMemoryLimit))
@@ -81,15 +75,12 @@ public class GeneralPanel extends JPanel implements Publisher {
                     .addComponent(labelMemoryLimit)
                     .addComponent(textFieldMemoryLimit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(buttonSave)
-                    .addComponent(buttonExport))
+                .addComponent(buttonSave)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton buttonExport;
     private javax.swing.JButton buttonSave;
     private javax.swing.JLabel labelMemoryLimit;
     private javax.swing.JLabel labelProblemName;
@@ -103,12 +94,11 @@ public class GeneralPanel extends JPanel implements Publisher {
     
     private void initCustomComponents() {
         buttonSave.addActionListener(event -> getObserver(SAVE).notify(SAVE, null));
-        buttonExport.addActionListener(event -> getObserver(EXPORT).notify(EXPORT, null));
     }
     
     @Override
     public List<String> getAvailableIds() {
-        return Arrays.asList(SAVE, EXPORT);
+        return Arrays.asList(SAVE);
     }
     
     @Override

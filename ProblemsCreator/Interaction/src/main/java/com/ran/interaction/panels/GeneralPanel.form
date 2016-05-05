@@ -27,9 +27,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="textFieldProblemName" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="0" pref="69" max="32767" attributes="0"/>
-                      <Component id="buttonExport" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="142" max="32767" attributes="0"/>
                       <Component id="buttonSave" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="textFieldTimeLimit" alignment="0" max="32767" attributes="0"/>
@@ -58,10 +56,7 @@
                   <Component id="textFieldMemoryLimit" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="buttonSave" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="buttonExport" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
+              <Component id="buttonSave" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -92,11 +87,6 @@
     <Component class="javax.swing.JButton" name="buttonSave">
       <Properties>
         <Property name="text" type="java.lang.String" value="Save"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="buttonExport">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Export"/>
       </Properties>
     </Component>
   </SubComponents>
