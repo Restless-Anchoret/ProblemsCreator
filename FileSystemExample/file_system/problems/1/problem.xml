@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<problem>
+    <name>First problem</name>
+    <timeLimit>1000</timeLimit>
+    <memoryLimit>64</memoryLimit>
+    <checker>match</checker>
+</problem>
