@@ -103,12 +103,31 @@ public class FilesUtil {
                 folderNames.add(path.getFileName().toString());
             }
         });
+        sortFolderNames(folderNames);
         return folderNames;
+    }
+    
+    private static void sortFolderNames(List<String> folderNames) {
+        List<Integer> numberedFolders = new ArrayList<>();
+        List<String> otherFolders = new ArrayList<>();
+        for (String name: folderNames) {
+            try {
+                numberedFolders.add(Integer.parseInt(name));
+            } catch (NumberFormatException exception) {
+                otherFolders.add(name);
+            }
+        }
+        Collections.sort(numberedFolders);
+        Collections.sort(otherFolders);
+        folderNames.clear();
+        for (Integer number: numberedFolders) {
+            folderNames.add(number.toString());
+        }
+        folderNames.addAll(otherFolders);
     }
     
     public static void normailizeSubfolderNames(Path folderPath) {
         List<String> folderNames = getSubfolderNames(folderPath);
-        Collections.sort(folderNames);
         for (int i = 0; i < folderNames.size(); i++) {
             Path subfolderPath = Paths.get(folderPath.toString(), folderNames.get(i));
             Path newSubfolderPath = Paths.get(folderPath.toString(), Integer.toString(i + 1));
