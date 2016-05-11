@@ -1,5 +1,7 @@
 package com.ran.testing.language;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Path;
 
 public interface LanguageToolkit {
@@ -34,5 +36,11 @@ public interface LanguageToolkit {
         }
         
     }
+    
+    static final OutputStream EMPTY_OUTPUT_STREAM = new OutputStream() {
+        @Override
+        public void write(int b) throws IOException {
+        }
+    };
     
 }

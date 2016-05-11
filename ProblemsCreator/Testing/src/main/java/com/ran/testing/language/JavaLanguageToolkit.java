@@ -2,10 +2,11 @@ package com.ran.testing.language;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import javax.tools.JavaCompiler;
@@ -13,41 +14,63 @@ import javax.tools.ToolProvider;
 
 public class JavaLanguageToolkit implements LanguageToolkit {
     
+    private static final String POLICY_FILE_NAME = "java_problem.policy";
+    private static final String PROPERTIES_FILE_NAME = "java.properties";
+    private static final String JAVA_PATH_PROPERTY = "java_path";
+    private static final String STACK_SIZE_PROPERTY = "stack_size";
+    
     private static final String STACK_OVERFLOW_SIGN = "StackOverflowError";
     private static final String HEAP_OVERFLOW_SIGN = "OutOfMemoryError";
     private static final String SECURITY_VIOLATED_SIGN = "SecurityManager";
     
-    private static final OutputStream EMPTY_ERROR_STREAM = new OutputStream() {
-        @Override
-        public void write(int b) throws IOException {
+    private static Properties javaProperties = null;
+    private static Path javaPropertiesLocation = null;
+    
+    private static Properties getJavaProperties(Path configFolder) throws FailException {
+        if (javaProperties == null || !Objects.equals(configFolder, javaPropertiesLocation)) {
+            javaProperties = new Properties();
+            try {
+                javaProperties.load(Files.newInputStream(configFolder.resolve(PROPERTIES_FILE_NAME)));
+            } catch (IOException exception) {
+                throw new FailException("Fail because of exception while loading " + PROPERTIES_FILE_NAME, exception);
+            }
+            javaPropertiesLocation = configFolder;
         }
-    };
+        return javaProperties;
+    }
     
     @Override
     public int compile(Path sourceFile, Path compileFolder, Path configFolder) throws FailException {
         if (Files.notExists(sourceFile) || Files.notExists(compileFolder)) {
-            throw new FailException("Compilation failed because files not found.");
+            throw new FailException("Compilation failed because files were not found.");
         }
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        return compiler.run(null, null, EMPTY_ERROR_STREAM, "-d", compileFolder.toString(), sourceFile.toString());
+        return compiler.run(null, null, EMPTY_OUTPUT_STREAM, "-d", compileFolder.toString(), sourceFile.toString());
     }
 
     @Override
     public ExecutionInfo execute(Path compileFile, Path inputFile, Path outputFile,
             Path configFolder, int timeLimit, short memoryLimit)
             throws FailException, TimeLimitException, MemoryLimitException, SecurityViolatedException {
-        Path policyPath = Paths.get(configFolder.toString(), "java_problem.policy");
+        Properties javaProperties = getJavaProperties(configFolder);
+        String javaPathProperty = javaProperties.getProperty(JAVA_PATH_PROPERTY);
+        String stackSizeProperty = javaProperties.getProperty(STACK_SIZE_PROPERTY);
+        Path policyPath = configFolder.resolve(POLICY_FILE_NAME);
         if (Files.notExists(compileFile) || Files.notExists(inputFile) ||
-                Files.notExists(outputFile) || Files.notExists(policyPath)) {
-            throw new FailException("Execution failed because files not found.");
+                Files.notExists(outputFile) || Files.notExists(policyPath) ||
+                javaPathProperty == null || stackSizeProperty == null) {
+            throw new FailException("Execution failed because files or properties were not found.");
         }
         try {
-            Path compileFolder = compileFile.getParent();
-            String className = getClassName(compileFile);
+            Path javaPath = Paths.get(javaPathProperty);
             String memoryOption = "-Xmx" + memoryLimit + "M";
+            String stackOption = "-Xss" + stackSizeProperty + "M";
+            String managerOption = "-Djava.security.manager";
             String policyOption = "-Djava.security.policy==" + policyPath.toString();
-            ProcessBuilder processBuilder = new ProcessBuilder("java", memoryOption, "-Xss8M",
-                    "-Djava.security.manager", policyOption, className);
+            String className = getClassName(compileFile);
+            ProcessBuilder processBuilder = new ProcessBuilder("\"" + javaPath.toString() + "\"",
+                    memoryOption, stackOption, managerOption, policyOption, className);
+            Path compileFolder = compileFile.getParent();
             processBuilder.directory(compileFolder.toFile());
             processBuilder.redirectInput(inputFile.toFile());
             processBuilder.redirectOutput(outputFile.toFile());
@@ -56,10 +79,10 @@ public class JavaLanguageToolkit implements LanguageToolkit {
                 long start = System.currentTimeMillis();
                 process = processBuilder.start();
                 process.waitFor(timeLimit, TimeUnit.MILLISECONDS);
-                if (process.isAlive()) {
-                    throw new TimeLimitException();
-                }
                 int decisionTime = (int)(System.currentTimeMillis() - start);
+                if (process.isAlive()) {
+                    throw new TimeLimitException(decisionTime);
+                }
                 int exitValue = process.exitValue();
                 if (exitValue != 0) {
                     analyseErrorStream(process.getErrorStream());

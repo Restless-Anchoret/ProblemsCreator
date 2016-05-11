@@ -107,15 +107,15 @@ public class CodingProblemTester implements ProblemTester {
                             .setDecisionTime(executionInfo.getDecisionTime())
                             .setDecisionMemory(executionInfo.getDecisionMemory());
                 } catch (TimeLimitException exception) {
-                    return VerdictInfo.VERDICT_TIME_LIMIT;
+                    return new VerdictInfo(Verdict.TIME_LIMIT).setDecisionTime(exception.getDecisionTime());
                 } catch (MemoryLimitException exception) {
                     return VerdictInfo.VERDICT_MEMORY_LIMIT;
                 } catch (SecurityViolatedException exception) {
                     return VerdictInfo.VERDICT_SECUR_VIOL;
                 } catch (FailException exception) {
-                    TestingLogging.logger.log(Level.FINE, "FailException while compilation of decision", exception);
+                    TestingLogging.logger.log(Level.FINE, "FailException while execution of decision", exception);
                     if (exception.getCause() != null) {
-                        TestingLogging.logger.log(Level.FINE, "FailException while compilation of decision (cause)", exception.getCause());
+                        TestingLogging.logger.log(Level.FINE, "FailException while execution of decision (cause)", exception.getCause());
                     }
                     return VerdictInfo.VERDICT_FAIL;
                 }
