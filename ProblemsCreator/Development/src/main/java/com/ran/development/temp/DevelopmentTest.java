@@ -15,13 +15,14 @@ import com.ran.development.valid.Validator;
 public class DevelopmentTest {
 
     public static void main(String[] args) {
-        int testsQuantity = 5;
+        //int testsQuantity = 5;
+        int testsQuantity = 1;
         String[] arguments = { "200000", "200000", "10000" };
         System.out.println("Generating:");
         testGenerators(testsQuantity, arguments);
-        System.out.print("\n\n\n");
-        System.out.println("Validating:");
-        testValidators(testsQuantity, arguments);
+        //System.out.print("\n\n\n");
+        //System.out.println("Validating:");
+        //testValidators(testsQuantity, arguments);
     }
     
     private static void testGenerators(int testsQuantity, String[] arguments) {

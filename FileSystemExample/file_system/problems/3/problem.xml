@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<problem>
+    <name>Exponentiation</name>
+    <timeLimit>2000</timeLimit>
+    <memoryLimit>64</memoryLimit>
+    <checker>match</checker>
+</problem>

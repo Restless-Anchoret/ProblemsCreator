@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -118,7 +119,7 @@ public class StandardFileSupplier implements FileSupplier {
         }
         Path destinationPath = Paths.get(testFolderPath.toString(), ANSWER_FILE_NAME);
         try {
-            Files.copy(answerFilePath, destinationPath);
+            Files.copy(answerFilePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
             return true;
         } catch (IOException exception) {
             FileSystemLogging.logger.log(Level.FINE, "IOException while copying answer test file", exception);
