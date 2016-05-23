@@ -8,6 +8,7 @@ import com.ran.interaction.components.SelectItem;
 import com.ran.interaction.panels.GeneralPanel;
 import com.ran.interaction.panels.GeneratorsPanel;
 import com.ran.interaction.panels.TestsPanel;
+import com.ran.interaction.panels.ValidatorsPanel;
 import com.ran.interaction.support.PresentationSupport;
 import com.ran.interaction.support.SwingUtil;
 import com.ran.interaction.windows.ProblemDialog;
@@ -20,6 +21,8 @@ import java.util.Properties;
 import javax.swing.JOptionPane;
 
 public class ProblemController {
+    
+    private static final String ALL_TESTS_SIGN = "ALL_TESTS";
     
     private ProblemDialog dialog = null;
     private FileSupplier fileSupplier = null;
@@ -63,6 +66,14 @@ public class ProblemController {
         dialog.getGeneratorsPanel().subscribe(GeneratorsPanel.GENERATE_TESTS, this::runGenerator);
         dialog.getGeneratorsPanel().setTestGroupItems(testGroupItems);
         updateGenerators(null, null);
+        dialog.getValidatorsPanel().subscribe(ValidatorsPanel.ADD, this::addValidator);
+        dialog.getValidatorsPanel().subscribe(ValidatorsPanel.VIEW_CODE, this::viewValidatorCode);
+        dialog.getValidatorsPanel().subscribe(ValidatorsPanel.DELETE, this::deleteValidator);
+        dialog.getValidatorsPanel().subscribe(ValidatorsPanel.UPDATE, this::updateValidators);
+        dialog.getValidatorsPanel().subscribe(ValidatorsPanel.VALIDATE_TESTS, this::runValidator);
+        testGroupItems.add(0, new SelectItem(ALL_TESTS_SIGN, presentationProperties.getProperty(ALL_TESTS_SIGN)));
+        dialog.getValidatorsPanel().setTestGroupItems(testGroupItems);
+        updateValidators(null, null);
     }
     
     private List<SelectItem> getTestGroupSelectItems() {
@@ -209,6 +220,44 @@ public class ProblemController {
     // ------------------------------------------------------------
     // Listeners for ValidatorsPanel
     // ------------------------------------------------------------  
+    
+    public void addValidator(String id, Object parameter) {
+        fileSupplier.addValidatorFolder(problemFolder);
+        updateValidators(null, null);
+    }
+    
+    public void viewValidatorCode(String id, Object parameter) {
+        String validatorFolder = parameter.toString();
+        Path validatorPath = fileSupplier.getValidatorCodeSupplier(
+                problemFolder, validatorFolder).getSourceFile();
+        FileEditorController controller = new FileEditorController();
+        controller.showDialog(validatorPath, false);
+        updateValidators(null, null);
+    }
+    
+    public void deleteValidator(String id, Object parameter) {
+        int answer = SwingUtil.showYesNoDialog(dialog, ValidatorsPanel.DELETING_VALIDATOR_MESSAGE,
+                ValidatorsPanel.DELETING_VALIDATOR_TITLE);
+        if (answer == JOptionPane.YES_OPTION) {
+            String validatorFolder = parameter.toString();
+            fileSupplier.deleteValidatorFolder(problemFolder, validatorFolder);
+            updateValidators(null, null);
+        }
+    }
+    
+    public void updateValidators(String id, Object parameter) {
+        List<String> validatorFolderNames = fileSupplier.getValidatorFolders(problemFolder);
+        Object[][] content = SwingUtil.prepareTableContent(validatorFolderNames, (number, row) -> {
+            row.add(number);
+            Path validatorPath = fileSupplier.getValidatorCodeSupplier(problemFolder, number).getSourceFile();
+            row.add(FilesUtil.getFileDescription(validatorPath));
+        });
+        dialog.getValidatorsPanel().setTableContent(content);
+    }
+    
+    public void runValidator(String id, Object parameter) {
+        System.out.println("Run validator: " + parameter);
+    }
     
     // ------------------------------------------------------------
     // Listeners for CheckersPanel
