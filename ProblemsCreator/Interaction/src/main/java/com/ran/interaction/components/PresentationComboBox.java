@@ -45,7 +45,8 @@ public class PresentationComboBox extends JPanel {
     }
 
     public void setSelectItems(List<SelectItem> selectItems) {
-        this.selectItems = selectItems;
+        this.selectItems = new ArrayList<>();
+        this.selectItems.addAll(selectItems);
         String[] presentationArray = new String[selectItems.size()];
         for (int i = 0; i < selectItems.size(); i++) {
             presentationArray[i] = selectItems.get(i).getPresentation();

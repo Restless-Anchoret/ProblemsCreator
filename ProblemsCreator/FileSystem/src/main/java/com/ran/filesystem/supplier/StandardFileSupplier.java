@@ -31,7 +31,10 @@ public class StandardFileSupplier implements FileSupplier {
                                 SUBMISSIONS_FOLDER = "submissions",
                                 SUBMISSION_DESCRIPTOR_NAME = "submission.xml",
                                 TEMP_FILES_FOLDER = "temp",
-                                CONFIGURATION_FOLDER = "config";
+                                CONFIGURATION_FOLDER = "config",
+                                GENERATOR_TEMPLATE = "GeneratorImplementation.java",
+                                VALIDATOR_TEMPLATE = "ValidatorImplementation.java",
+                                CHECKER_TEMPLATE = "CheckerImplementation.java";
     
     private String rootPath;
 
@@ -189,10 +192,13 @@ public class StandardFileSupplier implements FileSupplier {
     public CodeSupplier getCheckerCodeSupplier(String problemFolder) {
         Path checkerFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder,
                 CHECKER_FOLDER);
-        if (Files.notExists(checkerFolderPath)) {
-            return null;
+        FilesUtil.checkFolderExists(checkerFolderPath);
+        CodeSupplier codeSupplier = new StandardCodeSupplier(checkerFolderPath);
+        if (codeSupplier.getSourceFile() == null) {
+            Path templatePath = Paths.get(rootPath, CONFIGURATION_FOLDER, CHECKER_TEMPLATE);
+            FilesUtil.copyFileToFolder(templatePath, codeSupplier.getSourceFolder());
         }
-        return new StandardCodeSupplier(checkerFolderPath);
+        return codeSupplier;
     }
     
     // ------------------------------------------------------------
@@ -206,6 +212,8 @@ public class StandardFileSupplier implements FileSupplier {
         if (newFolderPath == null) {
             return null;
         }
+        Path templatePath = Paths.get(rootPath, CONFIGURATION_FOLDER, GENERATOR_TEMPLATE);
+        FilesUtil.copyFileToFolder(templatePath, newFolderPath);
         return newFolderPath.getFileName().toString();
     }
 
@@ -243,6 +251,8 @@ public class StandardFileSupplier implements FileSupplier {
         if (newFolderPath == null) {
             return null;
         }
+        Path templatePath = Paths.get(rootPath, CONFIGURATION_FOLDER, VALIDATOR_TEMPLATE);
+        FilesUtil.copyFileToFolder(templatePath, newFolderPath);
         return newFolderPath.getFileName().toString();
     }
 

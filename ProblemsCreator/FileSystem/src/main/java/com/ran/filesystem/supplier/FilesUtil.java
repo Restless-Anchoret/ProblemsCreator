@@ -153,6 +153,23 @@ public class FilesUtil {
         }
     }
     
+    public static Path copyFileToFolder(Path filePath, Path folderPath) {
+        if (filePath == null || folderPath == null) {
+            FileSystemLogging.logger.fine("Wrong arguments for copying method");
+            return null;
+        }
+        String fileName = filePath.getFileName().toString();
+        Path destinationPath = folderPath.resolve(fileName);
+        try {
+            Files.copy(filePath, destinationPath);
+            return destinationPath;
+        } catch (IOException exception) {
+            FileSystemLogging.logger.log(Level.FINE,
+                    "IOException while copying file: " + filePath, exception);
+            return null;
+        }
+    }
+    
     public static String getFileDescription(Path path) {
         if (path == null) {
             return null;

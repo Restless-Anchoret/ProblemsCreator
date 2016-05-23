@@ -6,6 +6,7 @@ import com.ran.filesystem.supplier.FileSupplier;
 import com.ran.filesystem.supplier.FilesUtil;
 import com.ran.interaction.components.SelectItem;
 import com.ran.interaction.panels.GeneralPanel;
+import com.ran.interaction.panels.GeneratorsPanel;
 import com.ran.interaction.panels.TestsPanel;
 import com.ran.interaction.support.PresentationSupport;
 import com.ran.interaction.support.SwingUtil;
@@ -39,7 +40,7 @@ public class ProblemController {
         dialog.setVisible(true);
     }
     
-    public void configureDialog(ProblemDialog dialog) {
+    private void configureDialog(ProblemDialog dialog) {
         ProblemDescriptor descriptor = fileSupplier.getProblemDescriptor(problemFolder);
         dialog.getGeneralPanel().subscribe(GeneralPanel.SAVE, this::saveGeneralProblemChanges);
         dialog.getGeneralPanel().setProblemName(descriptor.getProblemName());
@@ -52,12 +53,24 @@ public class ProblemController {
         dialog.getTestsPanel().subscribe(TestsPanel.UPDATE, this::updateTests);
         dialog.getTestsPanel().subscribe(TestsPanel.SAVE_POINTS, this::savePointsForTestGroup);
         dialog.getTestsPanel().subscribe(TestsPanel.CHANGE_TEST_GROUP, this::updateTests);
+        List<SelectItem> testGroupItems = getTestGroupSelectItems();
+        dialog.getTestsPanel().setTestGroupItems(testGroupItems);
+        updateTests(null, null);
+        dialog.getGeneratorsPanel().subscribe(GeneratorsPanel.ADD, this::addGenerator);
+        dialog.getGeneratorsPanel().subscribe(GeneratorsPanel.VIEW_CODE, this::viewGeneratorCode);
+        dialog.getGeneratorsPanel().subscribe(GeneratorsPanel.DELETE, this::deleteGenerator);
+        dialog.getGeneratorsPanel().subscribe(GeneratorsPanel.UPDATE, this::updateGenerators);
+        dialog.getGeneratorsPanel().subscribe(GeneratorsPanel.GENERATE_TESTS, this::runGenerator);
+        dialog.getGeneratorsPanel().setTestGroupItems(testGroupItems);
+        updateGenerators(null, null);
+    }
+    
+    private List<SelectItem> getTestGroupSelectItems() {
         List<SelectItem> testGroupItems = new ArrayList<>();
         for (TestGroupType type: TestGroupType.values()) {
             testGroupItems.add(new SelectItem(type.toString().toLowerCase(), presentationProperties.getProperty(type.toString())));
         }
-        dialog.getTestsPanel().setTestGroupItems(testGroupItems);
-        updateTests(TestsPanel.UPDATE, null);
+        return testGroupItems;
     }
     
     // ------------------------------------------------------------
@@ -154,6 +167,26 @@ public class ProblemController {
     // ------------------------------------------------------------
     // Listeners for GeneratorsPanel
     // ------------------------------------------------------------  
+    
+    public void addGenerator(String id, Object parameter) {
+        System.out.println("Add generator");
+    }
+    
+    public void viewGeneratorCode(String id, Object parameter) {
+        System.out.println("View generator code: " + parameter);
+    }
+    
+    public void deleteGenerator(String id, Object parameter) {
+        System.out.println("Delete generator: " + parameter);
+    }
+    
+    public void updateGenerators(String id, Object parameter) {
+        System.out.println("Update generators");
+    }
+    
+    public void runGenerator(String id, Object parameter) {
+        System.out.println("Run generator: " + parameter);
+    }
     
     // ------------------------------------------------------------
     // Listeners for ValidatorsPanel
