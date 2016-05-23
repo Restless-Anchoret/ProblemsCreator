@@ -212,9 +212,11 @@ public class StandardFileSupplier implements FileSupplier {
         if (newFolderPath == null) {
             return null;
         }
+        String generatorFolder = newFolderPath.getFileName().toString();
         Path templatePath = Paths.get(rootPath, CONFIGURATION_FOLDER, GENERATOR_TEMPLATE);
-        FilesUtil.copyFileToFolder(templatePath, newFolderPath);
-        return newFolderPath.getFileName().toString();
+        Path sourceFolderPath = getGeneratorCodeSupplier(problemFolder, generatorFolder).getSourceFolder();
+        FilesUtil.copyFileToFolder(templatePath, sourceFolderPath);
+        return generatorFolder;
     }
 
     @Override
@@ -251,9 +253,11 @@ public class StandardFileSupplier implements FileSupplier {
         if (newFolderPath == null) {
             return null;
         }
+        String validatorFolder = newFolderPath.getFileName().toString();
         Path templatePath = Paths.get(rootPath, CONFIGURATION_FOLDER, VALIDATOR_TEMPLATE);
-        FilesUtil.copyFileToFolder(templatePath, newFolderPath);
-        return newFolderPath.getFileName().toString();
+        Path sourceFolderPath = getValidatorCodeSupplier(problemFolder, validatorFolder).getSourceFolder();
+        FilesUtil.copyFileToFolder(templatePath, sourceFolderPath);
+        return validatorFolder;
     }
 
     @Override

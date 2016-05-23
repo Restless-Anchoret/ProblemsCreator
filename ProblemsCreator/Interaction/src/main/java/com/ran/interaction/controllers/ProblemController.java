@@ -169,19 +169,37 @@ public class ProblemController {
     // ------------------------------------------------------------  
     
     public void addGenerator(String id, Object parameter) {
-        System.out.println("Add generator");
+        fileSupplier.addGeneratorFolder(problemFolder);
+        updateGenerators(null, null);
     }
     
     public void viewGeneratorCode(String id, Object parameter) {
-        System.out.println("View generator code: " + parameter);
+        String generatorFolder = parameter.toString();
+        Path generatorPath = fileSupplier.getGeneratorCodeSupplier(
+                problemFolder, generatorFolder).getSourceFile();
+        FileEditorController controller = new FileEditorController();
+        controller.showDialog(generatorPath, false);
+        updateGenerators(null, null);
     }
     
     public void deleteGenerator(String id, Object parameter) {
-        System.out.println("Delete generator: " + parameter);
+        int answer = SwingUtil.showYesNoDialog(dialog, GeneratorsPanel.DELETING_GENERATOR_MESSAGE,
+                GeneratorsPanel.DELETING_GENERATOR_TITLE);
+        if (answer == JOptionPane.YES_OPTION) {
+            String generatorFolder = parameter.toString();
+            fileSupplier.deleteGeneratorFolder(problemFolder, generatorFolder);
+            updateGenerators(null, null);
+        }
     }
     
     public void updateGenerators(String id, Object parameter) {
-        System.out.println("Update generators");
+        List<String> generatorFolderNames = fileSupplier.getGeneratorFolders(problemFolder);
+        Object[][] content = SwingUtil.prepareTableContent(generatorFolderNames, (number, row) -> {
+            row.add(number);
+            Path generatorPath = fileSupplier.getGeneratorCodeSupplier(problemFolder, number).getSourceFile();
+            row.add(FilesUtil.getFileDescription(generatorPath));
+        });
+        dialog.getGeneratorsPanel().setTableContent(content);
     }
     
     public void runGenerator(String id, Object parameter) {

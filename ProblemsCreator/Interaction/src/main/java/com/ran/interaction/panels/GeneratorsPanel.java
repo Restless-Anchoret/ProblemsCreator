@@ -18,6 +18,16 @@ public class GeneratorsPanel extends JPanel implements Publisher {
     public static final String UPDATE = "update_generators";
     public static final String GENERATE_TESTS = "generate_tests";
     
+    public static final String DELETING_GENERATOR_MESSAGE = "Are you sure you want to delete this generator?";
+    public static final String DELETING_GENERATOR_TITLE = "Deleting generator";
+    
+    private static final String NUMBER = "Number";
+    private static final String GENERATOR = "Generator";
+    
+    private static final Object[] TABLE_HEADERS = {
+        NUMBER, GENERATOR
+    };
+    
     public GeneratorsPanel() {
         initComponents();
         initCustomComponents();
@@ -184,6 +194,10 @@ public class GeneratorsPanel extends JPanel implements Publisher {
     @Override
     public Observer getObserver(String id) {
         return observers.getOrDefault(id, EmptyObserver.getInstanse());
+    }
+    
+    public void setTableContent(Object[][] tableContent) {
+        tableGenerators.setTableContent(tableContent, TABLE_HEADERS);
     }
     
     public void setTestGroupItems(List<SelectItem> items) {
