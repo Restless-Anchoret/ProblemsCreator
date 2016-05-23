@@ -96,8 +96,10 @@ public class StandardFileSupplier implements FileSupplier {
         try {
             for (int i = 0; i < inputFilePaths.size(); i++) {
                 Path inputFilePath = inputFilePaths.get(i);
-                Path destinationPath = paths.get(i);
+                Path destinationPath = paths.get(i).resolve(INPUT_FILE_NAME);
                 Files.copy(inputFilePath, destinationPath);
+                Path emptyAnswerPath = paths.get(i).resolve(ANSWER_FILE_NAME);
+                Files.createFile(emptyAnswerPath);
             }
             return true;
         } catch (IOException exception) {
@@ -164,6 +166,7 @@ public class StandardFileSupplier implements FileSupplier {
     public int getTestsQuantity(String problemFolder, String testGroupType) {
         Path testGroupFolderPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder,
                 TESTS_FOLDER, testGroupType);
+        FilesUtil.checkFolderExists(testGroupFolderPath);
         return FilesUtil.getMaximumFolderNameNumber(testGroupFolderPath);
     }
 
@@ -171,8 +174,9 @@ public class StandardFileSupplier implements FileSupplier {
     public TestGroupDescriptor getTestGroupDescriptor(String problemFolder, String testGroupType) {
         Path descriptorPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder, TESTS_FOLDER,
                 testGroupType, TEST_GROUP_DESCRIPTOR_NAME);
+        FilesUtil.checkFolderExists(descriptorPath.getParent());
         if (Files.notExists(descriptorPath)) {
-            return null;
+            return TestGroupDescriptor.getEmptyTestGroupDescriptor(descriptorPath);
         }
         return TestGroupDescriptor.getExistingTestGroupDescriptor(descriptorPath);
     }

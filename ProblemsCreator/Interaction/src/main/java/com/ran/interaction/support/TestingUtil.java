@@ -38,7 +38,7 @@ public class TestingUtil {
         Properties properties = PresentationSupport.getPresentationProperties();
         String description = properties.getProperty(verdict, "");
         if (points != null) {
-            description += " with " + points+ " points";
+            description += " with " + points + " points";
         } else if (wrongTestNumber!= null) {
             description += " on test " + wrongTestNumber;
         }

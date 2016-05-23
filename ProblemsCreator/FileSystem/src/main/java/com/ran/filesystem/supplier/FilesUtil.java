@@ -153,6 +153,25 @@ public class FilesUtil {
         }
     }
     
+    public static String getFileDescription(Path path) {
+        if (path == null) {
+            return null;
+        }
+        String description = path.getFileName().toString();
+        try {
+            long fileSize = Files.size(path);
+            if (fileSize < 1000) {
+                description += " (" + fileSize + " bytes)";
+            } else {
+                description += " (" + (fileSize / 1000) + " KB)";
+            }
+        } catch (IOException exception) {
+            FileSystemLogging.logger.log(Level.FINE,
+                    "IOException while getting file size: " + path, exception);
+        }
+        return description;
+    }
+    
     @FunctionalInterface
     public static interface PathConsumer {
         void process(Path path) throws Exception;

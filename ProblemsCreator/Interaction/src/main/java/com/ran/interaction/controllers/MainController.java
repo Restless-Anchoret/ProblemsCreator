@@ -7,15 +7,15 @@ import com.ran.interaction.windows.MainFrame;
 import com.ran.interaction.logging.InteractionLogging;
 import com.ran.interaction.panels.ProblemsPanel;
 import com.ran.interaction.panels.SubmissionsPanel;
+import com.ran.interaction.support.PresentationSupport;
 import com.ran.interaction.support.SwingUtil;
 import com.ran.interaction.support.TestingUtil;
-import com.ran.testing.system.Verdict;
-import com.ran.testing.system.VerdictInfo;
 import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -111,6 +111,7 @@ public class MainController {
     
     private void updateSubmissions(String id, Object parameter) {
         FileSupplier fileSupplier = creator.getFileSupplier();
+        Properties properties = PresentationSupport.getPresentationProperties();
         List<String> submissionNumbers = fileSupplier.getSubmissionsFolderNames();
         Object[][] content = SwingUtil.prepareTableContent(submissionNumbers, (number, row) -> {
             row.add(number);
@@ -118,8 +119,8 @@ public class MainController {
             String problemNumber = descriptor.getProblemName();
             row.add(fileSupplier.getProblemsFolderNames().contains(problemNumber) ?
                     fileSupplier.getProblemDescriptor(problemNumber).getProblemName() : "");
-            row.add(descriptor.getEvaluationType());
-            row.add(descriptor.getCompilatorName());
+            row.add(properties.getProperty(descriptor.getEvaluationType()));
+            row.add(properties.getProperty(descriptor.getCompilatorName()));
             row.add(TestingUtil.getVerdictDescription(descriptor.getVerdict(),
                     descriptor.getDecisionPoints(), descriptor.getWrongTestNumber()));
             Integer decisionTime = descriptor.getDecisionTime();

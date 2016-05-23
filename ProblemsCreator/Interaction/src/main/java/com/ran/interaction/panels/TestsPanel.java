@@ -1,5 +1,6 @@
 package com.ran.interaction.panels;
 
+import com.ran.interaction.components.SelectItem;
 import com.ran.interaction.observer.EmptyObserver;
 import com.ran.interaction.observer.Observer;
 import com.ran.interaction.observer.Publisher;
@@ -20,9 +21,14 @@ public class TestsPanel extends JPanel implements Publisher {
     public static final String SAVE_POINTS = "save_test";
     public static final String CHANGE_TEST_GROUP = "change_test_group";
     
+    public static final String INCORRECT_POINTS_MESSAGE = "You should input number as points for test";
+    public static final String INCORRECT_POINTS_TITLE = "Incorrect points";
+    public static final String DELETING_TEST_MESSAGE = "Are you sure you want to delete this test?";
+    public static final String DELETING_TEST_TITLE = "Deleting test";
+    
     private static final String NUMBER = "Number";
-    private static final String INPUT_FILE = "input.txt";
-    private static final String ANSWER_FILE = "answer.txt";
+    private static final String INPUT_FILE = "Input";
+    private static final String ANSWER_FILE = "Answer";
     
     private static final Object[] TABLE_HEADERS = {
         NUMBER, INPUT_FILE, ANSWER_FILE
@@ -175,8 +181,28 @@ public class TestsPanel extends JPanel implements Publisher {
         return observers.getOrDefault(id, EmptyObserver.getInstanse());
     }
     
+    public String getSelectedTestGroupType() {
+        return comboBoxTestGroup.getSelectedValue();
+    }
+    
+    public void setTestGroupItems(List<SelectItem> items) {
+        comboBoxTestGroup.setSelectItems(items);
+    }
+    
     public void setTableContent(Object[][] tableContent) {
         tableTests.setTableContent(tableContent, TABLE_HEADERS);
+    }
+    
+    public Integer getPointsForTest() {
+        try {
+            return Integer.parseInt(textFieldPoints.getText());
+        } catch (NumberFormatException exception) {
+            return null;
+        }
+    }
+    
+    public void setPointsForTest(Integer points) {
+        textFieldPoints.setText(points.toString());
     }
     
 }
