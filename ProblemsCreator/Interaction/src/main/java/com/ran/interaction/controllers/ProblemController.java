@@ -1,5 +1,6 @@
 package com.ran.interaction.controllers;
 
+import com.ran.filesystem.descriptor.AuthorDecisionDescriptor;
 import com.ran.filesystem.descriptor.ProblemDescriptor;
 import com.ran.filesystem.descriptor.TestGroupDescriptor;
 import com.ran.filesystem.supplier.FileSupplier;
@@ -306,11 +307,20 @@ public class ProblemController {
     // ------------------------------------------------------------  
     
     public void addAuthorDecision(String id, Object parameter) {
-        System.out.println("Add author decision");
+        AddingAuthorDecisionController controller = new AddingAuthorDecisionController();
+        controller.setFileSupplier(fileSupplier);
+        controller.setProblemFolder(problemFolder);
+        controller.showDialog();
+        updateAuthorDecisions(null, null);
     }
     
     public void viewAuthorDecisionCode(String id, Object parameter) {
-        System.out.println("View author decision code: " + parameter);
+        String authorDecisionFolder = parameter.toString();
+        Path authorDecisionSourcePath = fileSupplier.getAuthorDecisionCodeSupplier(
+                problemFolder, authorDecisionFolder).getSourceFile();
+        FileEditorController controller = new FileEditorController();
+        controller.showDialog(authorDecisionSourcePath, true);
+        updateAuthorDecisions(null, null);
     }
     
     public void submitAuthorDecision(String id, Object parameter) {
@@ -318,11 +328,27 @@ public class ProblemController {
     }
     
     public void deleteAuthorDecision(String id, Object parameter) {
-        System.out.println("Delete author decision: " + parameter);
+        int answer = SwingUtil.showYesNoDialog(dialog, AuthorDecisionsPanel.DELETING_MESSAGE,
+                AuthorDecisionsPanel.DELETING_TITLE);
+        if (answer == JOptionPane.YES_OPTION) {
+            String authorDecisionFolder = parameter.toString();
+            fileSupplier.deleteAuthorDecisionFolder(problemFolder, authorDecisionFolder);
+            updateAuthorDecisions(null, null);
+        }
     }
     
     public void updateAuthorDecisions(String id, Object parameter) {
-        System.out.println("Update author decisions");
+        List<String> authorDecisionFolders = fileSupplier.getAuthorDecisionsFolderNames(problemFolder);
+        Object[][] content = SwingUtil.prepareTableContent(authorDecisionFolders, (number, row) -> {
+            row.add(number);
+            Path authorDecisionSourcePath = fileSupplier.getAuthorDecisionCodeSupplier(
+                    problemFolder, number).getSourceFile();
+            row.add(FilesUtil.getFileDescription(authorDecisionSourcePath));
+            AuthorDecisionDescriptor descriptor = fileSupplier.getAuthorDecisionDescriptor(problemFolder, number);
+            row.add(descriptor.getTitle());
+            row.add(presentationProperties.getProperty(descriptor.getCompilatorName()));
+        });
+        dialog.getAuthorDecisionsPanel().setTableContent(content);
     }
     
     public void createAnswersForAuthorDecision(String id, Object parameter) {

@@ -19,6 +19,9 @@ public class AuthorDecisionsPanel extends JPanel implements Publisher {
     public static final String UPDATE = "update_author_decisions";
     public static final String CREATE_ANSWERS = "create_answers";
     
+    public static final String DELETING_MESSAGE = "Are you sure you want to delete this author decision?";
+    public static final String DELETING_TITLE = "Deleting author decision";
+    
     private static final String NUMBER = "Number";
     private static final String DECISION = "Decision";
     private static final String TITLE = "Title";
