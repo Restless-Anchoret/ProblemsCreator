@@ -5,6 +5,8 @@ import com.ran.filesystem.descriptor.TestGroupDescriptor;
 import com.ran.filesystem.supplier.FileSupplier;
 import com.ran.filesystem.supplier.FilesUtil;
 import com.ran.interaction.components.SelectItem;
+import com.ran.interaction.panels.AuthorDecisionsPanel;
+import com.ran.interaction.panels.CheckersPanel;
 import com.ran.interaction.panels.GeneralPanel;
 import com.ran.interaction.panels.GeneratorsPanel;
 import com.ran.interaction.panels.TestsPanel;
@@ -12,6 +14,7 @@ import com.ran.interaction.panels.ValidatorsPanel;
 import com.ran.interaction.support.PresentationSupport;
 import com.ran.interaction.support.SwingUtil;
 import com.ran.interaction.windows.ProblemDialog;
+import com.ran.testing.checker.CheckerRegistry;
 import com.ran.testing.system.TestGroupType;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -74,14 +77,37 @@ public class ProblemController {
         testGroupItems.add(0, new SelectItem(ALL_TESTS_SIGN, presentationProperties.getProperty(ALL_TESTS_SIGN)));
         dialog.getValidatorsPanel().setTestGroupItems(testGroupItems);
         updateValidators(null, null);
+        dialog.getCheckersPanel().subscribe(CheckersPanel.CHANGE_CHECKER, this::changeCheckerType);
+        dialog.getCheckersPanel().subscribe(CheckersPanel.VIEW_CODE, this::viewCheckerCode);
+        dialog.getCheckersPanel().subscribe(CheckersPanel.RECOMPILE, this::recompileCheckerCode);
+        dialog.getCheckersPanel().setCheckerTypeItems(getCheckerTypeSelectItems());
+        dialog.getCheckersPanel().setSelectedCheckerType(fileSupplier
+                .getProblemDescriptor(problemFolder).getCheckerType());
+        dialog.getAuthorDecisionsPanel().subscribe(AuthorDecisionsPanel.ADD, this::addAuthorDecision);
+        dialog.getAuthorDecisionsPanel().subscribe(AuthorDecisionsPanel.VIEW_CODE, this::viewAuthorDecisionCode);
+        dialog.getAuthorDecisionsPanel().subscribe(AuthorDecisionsPanel.SUBMIT, this::submitAuthorDecision);
+        dialog.getAuthorDecisionsPanel().subscribe(AuthorDecisionsPanel.DELETE, this::deleteAuthorDecision);
+        dialog.getAuthorDecisionsPanel().subscribe(AuthorDecisionsPanel.UPDATE, this::updateAuthorDecisions);
+        dialog.getAuthorDecisionsPanel().subscribe(AuthorDecisionsPanel.CREATE_ANSWERS, this::createAnswersForAuthorDecision);
+        dialog.getAuthorDecisionsPanel().setTestGroupItems(testGroupItems);
+        updateAuthorDecisions(null, null);
     }
     
     private List<SelectItem> getTestGroupSelectItems() {
         List<SelectItem> testGroupItems = new ArrayList<>();
         for (TestGroupType type: TestGroupType.values()) {
-            testGroupItems.add(new SelectItem(type.toString().toLowerCase(), presentationProperties.getProperty(type.toString())));
+            testGroupItems.add(new SelectItem(type.toString().toLowerCase(),
+                    presentationProperties.getProperty(type.toString())));
         }
         return testGroupItems;
+    }
+    
+    private List<SelectItem> getCheckerTypeSelectItems() {
+        List<SelectItem> checkerTypeItems = new ArrayList<>();
+        for (String checkerTypeId: CheckerRegistry.registry().getAvailableIds()) {
+            checkerTypeItems.add(new SelectItem(checkerTypeId, presentationProperties.getProperty(checkerTypeId)));
+        }
+        return checkerTypeItems;
     }
     
     // ------------------------------------------------------------
@@ -263,8 +289,44 @@ public class ProblemController {
     // Listeners for CheckersPanel
     // ------------------------------------------------------------  
     
+    public void changeCheckerType(String id, Object parameter) {
+        System.out.println("Change checker type");
+    }
+    
+    public void viewCheckerCode(String id, Object parameter) {
+        System.out.println("View checker code");
+    }
+    
+    public void recompileCheckerCode(String id, Object parameter) {
+        System.out.println("Recompile checker code");
+    }
+    
     // ------------------------------------------------------------
     // Listeners for AuthorDecisionsPanel
     // ------------------------------------------------------------  
+    
+    public void addAuthorDecision(String id, Object parameter) {
+        System.out.println("Add author decision");
+    }
+    
+    public void viewAuthorDecisionCode(String id, Object parameter) {
+        System.out.println("View author decision code: " + parameter);
+    }
+    
+    public void submitAuthorDecision(String id, Object parameter) {
+        System.out.println("Submit author decision: " + parameter);
+    }
+    
+    public void deleteAuthorDecision(String id, Object parameter) {
+        System.out.println("Delete author decision: " + parameter);
+    }
+    
+    public void updateAuthorDecisions(String id, Object parameter) {
+        System.out.println("Update author decisions");
+    }
+    
+    public void createAnswersForAuthorDecision(String id, Object parameter) {
+        System.out.println("Create answers for author decision: " + parameter);
+    }
     
 }
