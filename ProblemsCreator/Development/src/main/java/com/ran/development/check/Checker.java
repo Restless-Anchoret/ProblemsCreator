@@ -62,7 +62,7 @@ public abstract class Checker {
 
     protected void ensureIf(boolean condition, String message) throws CheckResultException {
         if (!condition) {
-            quit(FAIL, message);
+            quit(WRONG_ANSWER, message);
         }
     }
 

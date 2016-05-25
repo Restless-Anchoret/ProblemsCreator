@@ -38,7 +38,7 @@ public class DevelopmentTest {
         multiGenerator.setArguments(arguments);
         //multiGenerator.setArguments(new String[] { "11", "100", "1000" });
         multiGenerator.setRandomSeed(100);
-        multiGenerator.setGeneratorSupplier(Utils.getSupplier(Generator.class, Paths.get("file_system"), "NewGenerator"));
+        multiGenerator.setGeneratorSupplier(Utils.getSupplier(Generator.class, Paths.get("file_system", "NewGenerator.class")));
         multiGenerator.addDevelopmentListener(getListener());
         multiGenerator.performGenerating();
     }
@@ -54,7 +54,7 @@ public class DevelopmentTest {
         }
         multiValidator.setPaths(paths);
         multiValidator.setArguments(arguments);
-        multiValidator.setGeneratorSupplier(Utils.getSupplier(Validator.class, Paths.get("file_system"), "NewValidator"));
+        multiValidator.setGeneratorSupplier(Utils.getSupplier(Validator.class, Paths.get("file_system", "NewValidator.class")));
         multiValidator.addDevelopmentListener(getListener());
         multiValidator.performValidating();
     }

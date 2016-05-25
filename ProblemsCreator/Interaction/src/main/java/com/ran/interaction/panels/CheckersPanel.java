@@ -16,6 +16,10 @@ public class CheckersPanel extends JPanel implements Publisher {
     public static final String VIEW_CODE = "view_checker_code";
     public static final String RECOMPILE = "recompile_checker";
     
+    public static final String CHECKER_COMPILATION_SUCCESS = "Checker was compilated successfully";
+    public static final String CHECKER_COMPILATION_FAIL = "Error while compilation of checker";
+    public static final String CHECKER_COMPILATION_TITLE = "Checker's compilation";
+    
     public CheckersPanel() {
         initComponents();
         initCustomComponents();

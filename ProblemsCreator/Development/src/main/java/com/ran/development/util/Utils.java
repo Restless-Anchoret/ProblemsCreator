@@ -11,8 +11,10 @@ public class Utils {
 
     private Utils() { }
     
-    public static <T> Supplier<? extends T> getSupplier(Class<T> parentClass, Path folderPath, String className) {
+    public static <T> Supplier<? extends T> getSupplier(Class<T> parentClass, Path classFilePath) {
         try {
+            Path folderPath = classFilePath.getParent();
+            String className = getClassName(classFilePath);
             ClassLoader loader = new URLClassLoader(new URL[] { folderPath.toUri().toURL() });
             Class<? extends T> cl = (Class<? extends T>)loader.loadClass(className);
             cl.newInstance();
@@ -30,6 +32,12 @@ public class Utils {
             DevelopmentLogging.logger.log(Level.FINE, message, throwable);
             return null;
         }
+    }
+    
+    private static String getClassName(Path classFilePath) {
+        String fileName = classFilePath.getFileName().toString();
+        int index = fileName.lastIndexOf('.');
+        return fileName.substring(0, index);
     }
     
 }

@@ -3,9 +3,11 @@ package com.ran.interaction.controllers;
 import com.ran.filesystem.descriptor.AuthorDecisionDescriptor;
 import com.ran.filesystem.descriptor.ProblemDescriptor;
 import com.ran.filesystem.descriptor.TestGroupDescriptor;
+import com.ran.filesystem.supplier.CodeSupplier;
 import com.ran.filesystem.supplier.FileSupplier;
 import com.ran.filesystem.supplier.FilesUtil;
 import com.ran.interaction.components.SelectItem;
+import com.ran.interaction.logging.InteractionLogging;
 import com.ran.interaction.panels.AuthorDecisionsPanel;
 import com.ran.interaction.panels.CheckersPanel;
 import com.ran.interaction.panels.GeneralPanel;
@@ -16,12 +18,16 @@ import com.ran.interaction.support.PresentationSupport;
 import com.ran.interaction.support.SwingUtil;
 import com.ran.interaction.windows.ProblemDialog;
 import com.ran.testing.checker.CheckerRegistry;
+import com.ran.testing.language.FailException;
+import com.ran.testing.language.LanguageToolkit;
+import com.ran.testing.language.LanguageToolkitRegistry;
 import com.ran.testing.system.TestGroupType;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 import javax.swing.JOptionPane;
 
 public class ProblemController {
@@ -291,15 +297,36 @@ public class ProblemController {
     // ------------------------------------------------------------  
     
     public void changeCheckerType(String id, Object parameter) {
-        System.out.println("Change checker type");
+        String selectedCheckerType = dialog.getCheckersPanel().getSelectedCheckerType();
+        ProblemDescriptor descriptor = fileSupplier.getProblemDescriptor(problemFolder);
+        descriptor.setCheckerType(selectedCheckerType);
+        descriptor.persist();
     }
     
     public void viewCheckerCode(String id, Object parameter) {
-        System.out.println("View checker code");
+        Path checkerSourcePath = fileSupplier.getCheckerCodeSupplier(problemFolder).getSourceFile();
+        FileEditorController controller = new FileEditorController();
+        controller.showDialog(checkerSourcePath, false);
+        recompileCheckerCode(null, null);
     }
     
     public void recompileCheckerCode(String id, Object parameter) {
-        System.out.println("Recompile checker code");
+        LanguageToolkit languageToolkit = LanguageToolkitRegistry.registry().getDefault();
+        CodeSupplier supplier = fileSupplier.getCheckerCodeSupplier(problemFolder);
+        int compilationResult = 1;
+        try {
+            compilationResult = languageToolkit.compile(supplier.getSourceFile(),
+                    supplier.getCompileFolder(), fileSupplier.getConfigurationFolder());
+        } catch (FailException exception) {
+            InteractionLogging.logger.log(Level.FINE, "FailException while checker's compilation", exception);
+        }
+        if (compilationResult == 0) {
+            SwingUtil.showMessageDialog(dialog, CheckersPanel.CHECKER_COMPILATION_SUCCESS,
+                    CheckersPanel.CHECKER_COMPILATION_TITLE);
+        } else {
+            SwingUtil.showMessageDialog(dialog, CheckersPanel.CHECKER_COMPILATION_FAIL,
+                    CheckersPanel.CHECKER_COMPILATION_TITLE);
+        }
     }
     
     // ------------------------------------------------------------

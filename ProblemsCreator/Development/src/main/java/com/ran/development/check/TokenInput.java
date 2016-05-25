@@ -72,7 +72,7 @@ public class TokenInput {
     }
     
     public String nextToken() throws CheckResultException {
-        if (tokenizer == null && !tokenizer.hasMoreTokens()) {
+        if (tokenizer == null || !tokenizer.hasMoreTokens()) {
             String nextLine = null;
             do {
                 nextLine = nextLineFromInput();

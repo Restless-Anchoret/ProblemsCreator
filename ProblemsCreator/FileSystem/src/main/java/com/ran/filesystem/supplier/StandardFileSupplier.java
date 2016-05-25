@@ -196,7 +196,7 @@ public class StandardFileSupplier implements FileSupplier {
         CodeSupplier codeSupplier = new StandardCodeSupplier(checkerFolderPath);
         if (codeSupplier.getSourceFile() == null) {
             Path templatePath = Paths.get(rootPath, CONFIGURATION_FOLDER, CHECKER_TEMPLATE);
-            FilesUtil.copyFileToFolder(templatePath, codeSupplier.getSourceFolder());
+            codeSupplier.putSourceFile(templatePath);
         }
         return codeSupplier;
     }
