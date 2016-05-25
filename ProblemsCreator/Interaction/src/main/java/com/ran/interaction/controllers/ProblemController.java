@@ -1,5 +1,6 @@
 package com.ran.interaction.controllers;
 
+import com.ran.development.valid.MultiValidator;
 import com.ran.filesystem.descriptor.AuthorDecisionDescriptor;
 import com.ran.filesystem.descriptor.ProblemDescriptor;
 import com.ran.filesystem.descriptor.TestGroupDescriptor;
@@ -14,6 +15,10 @@ import com.ran.interaction.panels.GeneralPanel;
 import com.ran.interaction.panels.GeneratorsPanel;
 import com.ran.interaction.panels.TestsPanel;
 import com.ran.interaction.panels.ValidatorsPanel;
+import com.ran.interaction.strategy.CreatingAnswersStrategy;
+import com.ran.interaction.strategy.DevelopmentStrategy;
+import com.ran.interaction.strategy.GeneratingStrategy;
+import com.ran.interaction.strategy.ValidatingStrategy;
 import com.ran.interaction.support.PresentationSupport;
 import com.ran.interaction.support.SwingUtil;
 import com.ran.interaction.windows.ProblemDialog;
@@ -253,7 +258,9 @@ public class ProblemController {
     }
     
     public void runGenerator(String id, Object parameter) {
-        System.out.println("Run generator: " + parameter);
+        DevelopmentController controller = new DevelopmentController();
+        controller.setDevelopmentStrategy(new GeneratingStrategy());
+        controller.showDialog();
     }
     
     // ------------------------------------------------------------
@@ -295,7 +302,32 @@ public class ProblemController {
     }
     
     public void runValidator(String id, Object parameter) {
-        System.out.println("Run validator: " + parameter);
+        String validatorFolder = parameter.toString();
+        DevelopmentController controller = new DevelopmentController();
+        MultiValidator multiValidator = new MultiValidator();
+        multiValidator.setArguments(dialog.getValidatorsPanel().getArguments());
+        multiValidator.setPaths(getInputTestPaths(dialog.getValidatorsPanel().getTestGroupType()));
+        DevelopmentStrategy strategy = new ValidatingStrategy(multiValidator);
+        strategy.setFileSupplier(fileSupplier);
+        strategy.setCodeSupplier(fileSupplier.getValidatorCodeSupplier(problemFolder, validatorFolder));
+        controller.setDevelopmentStrategy(strategy);
+        controller.showDialog();
+    }
+    
+    private Path[] getInputTestPaths(String testGroupType) {
+        List<Path> listPaths = new ArrayList<>();
+        TestGroupType[] types = TestGroupType.values();
+        if (!ALL_TESTS_SIGN.equals(testGroupType)) {
+            types = new TestGroupType[] { TestGroupType.valueOf(testGroupType.toUpperCase()) } ;
+        }
+        for (TestGroupType type: types) {
+            String typeString = type.toString().toLowerCase();
+            for (int testNumber = 1; testNumber <= fileSupplier
+                    .getTestsQuantity(problemFolder, typeString); testNumber++) {
+                listPaths.add(fileSupplier.getTestInputFile(problemFolder, typeString, testNumber));
+            }
+        }
+        return listPaths.toArray(new Path[] { });
     }
     
     // ------------------------------------------------------------
@@ -391,7 +423,9 @@ public class ProblemController {
     }
     
     public void createAnswersForAuthorDecision(String id, Object parameter) {
-        System.out.println("Create answers for author decision: " + parameter);
+        DevelopmentController controller = new DevelopmentController();
+        controller.setDevelopmentStrategy(new CreatingAnswersStrategy());
+        controller.showDialog();
     }
     
 }

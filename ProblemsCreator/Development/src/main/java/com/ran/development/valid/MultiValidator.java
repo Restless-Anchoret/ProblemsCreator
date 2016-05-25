@@ -28,7 +28,7 @@ public class MultiValidator {
         return validatorSupplier;
     }
 
-    public void setGeneratorSupplier(Supplier<? extends Validator> validatorSupplier) {
+    public void setValidatorSupplier(Supplier<? extends Validator> validatorSupplier) {
         this.validatorSupplier = validatorSupplier;
     }
 

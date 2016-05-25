@@ -42,6 +42,12 @@ public abstract class Validator {
         throw new ValidationException(message, input.getState());
     }
     
+    protected void ensure(boolean condition) throws ValidationException {
+        if (!condition) {
+            error("Condition is not true");
+        }
+    }
+    
     protected void inBounds(int lowEdge, int number, int highEdge) throws ValidationException {
         if (!(lowEdge <= number && number <= highEdge)) {
             error("Number out of bounds");

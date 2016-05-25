@@ -1,6 +1,5 @@
 package com.ran.development.util;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +16,7 @@ public class DevelopmentListenerSupport {
     }
     
     public Set<DevelopmentListener> getDevelopmentListeners() {
-        return Collections.unmodifiableSet(listeners);
+        return new HashSet<>(listeners);
     }
     
     public void fireProcessingStarted() {

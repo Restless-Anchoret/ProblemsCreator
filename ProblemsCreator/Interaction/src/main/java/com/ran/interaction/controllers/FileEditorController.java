@@ -3,12 +3,13 @@ package com.ran.interaction.controllers;
 import com.ran.interaction.logging.InteractionLogging;
 import com.ran.interaction.support.SwingUtil;
 import com.ran.interaction.windows.FileEditorDialog;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.logging.Level;
 
 public class FileEditorController {
@@ -28,16 +29,14 @@ public class FileEditorController {
         dialog.subscribe(FileEditorDialog.CANCEL, this::cancelChanges);
         dialog.setFilePath(filePath);
         dialog.setReadOnly(readOnly);
-        try {
-            List<String> fileLines = Files.readAllLines(filePath);
-            StringBuilder builder = new StringBuilder();
-            for (String line: fileLines) {
-                if (builder.length() > 0) {
-                    builder.append('\n');
-                }
-                builder.append(line);
+        try (InputStream inputStream = Files.newInputStream(filePath);
+                ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) != -1) {
+                byteArrayStream.write(buffer, 0, length);
             }
-            dialog.setText(builder.toString());
+            dialog.setText(byteArrayStream.toString());
         } catch (IOException exception) {
             InteractionLogging.logger.log(Level.FINE, "IOException while reading file content", exception);
             dialog.setText(FileEditorDialog.CANNOT_READ_TEXT);

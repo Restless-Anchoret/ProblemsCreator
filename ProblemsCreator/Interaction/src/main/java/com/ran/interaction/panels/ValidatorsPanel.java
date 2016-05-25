@@ -172,4 +172,12 @@ public class ValidatorsPanel extends JPanel implements Publisher {
         comboBoxTestGroup.setSelectItems(items);
     }
     
+    public String[] getArguments() {
+        return textFieldArguments.getText().split(" ");
+    }
+    
+    public String getTestGroupType() {
+        return comboBoxTestGroup.getSelectedValue();
+    }
+    
 }

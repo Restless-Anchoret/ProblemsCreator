@@ -54,7 +54,7 @@ public class DevelopmentTest {
         }
         multiValidator.setPaths(paths);
         multiValidator.setArguments(arguments);
-        multiValidator.setGeneratorSupplier(Utils.getSupplier(Validator.class, Paths.get("file_system", "NewValidator.class")));
+        multiValidator.setValidatorSupplier(Utils.getSupplier(Validator.class, Paths.get("file_system", "NewValidator.class")));
         multiValidator.addDevelopmentListener(getListener());
         multiValidator.performValidating();
     }
