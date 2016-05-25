@@ -26,17 +26,22 @@ public class IOIEvaluationSystem implements EvaluationSystem {
 
     @Override
     public VerdictInfo getVerdictInfo(TestTable testTable, boolean pretestsOnly) {
+        Integer decisionTime = null;
+        Short decisionMemory = null;
         int samplesQuantity = testTable.getTestsQuantity(TestGroupType.SAMPLES);
         for (int testNumber = 1; testNumber <= samplesQuantity; testNumber++) {
             VerdictInfo verdictInfo = testTable.getVerdictInfoForTest(TestGroupType.SAMPLES, testNumber);
             if (verdictInfo.getVerdict() != Verdict.ACCEPTED) {
                 return verdictInfo.clone().setWrongTestNumber(testNumber);
+            } else {
+                decisionTime = updateDecisionTime(decisionTime, verdictInfo);
+                decisionMemory = updateDecisionMemory(decisionMemory, verdictInfo);
             }
         }
         
         int testsCounted = samplesQuantity;
         Integer wrongTestNumber = null;
-        short points = 0;
+        short points = (short)(samplesQuantity * testTable.getPointsForTest(TestGroupType.SAMPLES));
         
         int firstGroupIndex = TestGroupType.PRETESTS.ordinal();
         int lastGroupIndex = (pretestsOnly ? TestGroupType.PRETESTS.ordinal() : TestGroupType.values().length - 1);
@@ -49,6 +54,8 @@ public class IOIEvaluationSystem implements EvaluationSystem {
                 VerdictInfo verdictInfo = testTable.getVerdictInfoForTest(type, testNumber);
                 if (verdictInfo.getVerdict() == Verdict.ACCEPTED) {
                     points += pointsForTest;
+                    decisionTime = updateDecisionTime(decisionTime, verdictInfo);
+                    decisionMemory = updateDecisionMemory(decisionMemory, verdictInfo);
                 } else if (wrongTestNumber == null) {
                     wrongTestNumber = testsCounted + testNumber;
                 }
@@ -56,7 +63,25 @@ public class IOIEvaluationSystem implements EvaluationSystem {
             testsCounted += testsQuantity;
         }
         return new VerdictInfo(Verdict.PARTIAL_ACC, points)
-                .setWrongTestNumber(wrongTestNumber);
+                .setWrongTestNumber(wrongTestNumber)
+                .setDecisionTime(decisionTime)
+                .setDecisionMemory(decisionMemory);
+    }
+    
+    private Integer updateDecisionTime(Integer oldValue, VerdictInfo verdictInfo) {
+        if (verdictInfo.getDecisionTime() == null) {
+            return oldValue;
+        }
+        return (oldValue == null ? verdictInfo.getDecisionTime() :
+                Math.max(oldValue, verdictInfo.getDecisionTime()));
+    }
+    
+    private Short updateDecisionMemory(Short oldValue, VerdictInfo verdictInfo) {
+        if (verdictInfo.getDecisionMemory() == null) {
+            return oldValue;
+        }
+        return (oldValue == null ? verdictInfo.getDecisionMemory() :
+                (short)Math.max(oldValue, verdictInfo.getDecisionTime()));
     }
 
     @Override
