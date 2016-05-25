@@ -12,6 +12,7 @@ import java.util.Map;
 
 public class SubmissionResultDialog extends JDialog implements Publisher {
 
+    private static final String AUTHOR_DECISION_PREFIX = "Author decision: ";
     private static final String SUBMISSION_PREFIX = "Submission: ";
     private static final String PROBLEM_PREFIX = "Problem: ";
     private static final String EVALUATION_SYSTEM_PREFIX = "Evaluation system: ";
@@ -150,6 +151,10 @@ public class SubmissionResultDialog extends JDialog implements Publisher {
     @Override
     public Observer getObserver(String id) {
         return observers.getOrDefault(id, EmptyObserver.getInstanse());
+    }
+    
+    public void setAuthorDecision(String authorDecision) {
+        labelSubmission.setText(AUTHOR_DECISION_PREFIX + authorDecision);
     }
     
     public void setSubmission(String submission) {

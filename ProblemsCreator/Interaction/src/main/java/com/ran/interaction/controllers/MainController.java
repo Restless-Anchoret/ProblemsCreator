@@ -123,8 +123,7 @@ public class MainController {
             row.add(properties.getProperty(descriptor.getCompilatorName()));
             row.add(TestingUtil.getVerdictDescription(descriptor.getVerdict(),
                     descriptor.getDecisionPoints(), descriptor.getWrongTestNumber()));
-            Integer decisionTime = descriptor.getDecisionTime();
-            row.add(decisionTime == null ? "" : decisionTime + " ms");
+            row.add(TestingUtil.getTimeDescription(descriptor.getDecisionTime()));
         });
         mainFrame.getSubmissionsPanel().setTableContent(content);
     }
@@ -137,6 +136,7 @@ public class MainController {
     private void editProblem(String id, Object parameter) {
         ProblemController problemController = new ProblemController();
         problemController.setFileSupplier(creator.getFileSupplier());
+        problemController.setTestingSystem(creator.getTestingSystem());
         problemController.setProblemFolder(parameter.toString());
         problemController.showDialog();
         updateProblems(null, null);
@@ -155,13 +155,14 @@ public class MainController {
     private void updateProblems(String id, Object parameter) {
         FileSupplier fileSupplier = creator.getFileSupplier();
         List<String> problemNumbers = fileSupplier.getProblemsFolderNames();
+        Properties presentationProperties = PresentationSupport.getPresentationProperties();
         Object[][] content = SwingUtil.prepareTableContent(problemNumbers, (number, row) -> {
             row.add(number);
             ProblemDescriptor descriptor = fileSupplier.getProblemDescriptor(number);
             row.add(descriptor.getProblemName());
-            row.add(descriptor.getTimeLimit() + "");
-            row.add(descriptor.getMemoryLimit() + "");
-            row.add(descriptor.getCheckerType());
+            row.add(TestingUtil.getTimeDescription(descriptor.getTimeLimit()));
+            row.add(TestingUtil.getMemoryDescription(descriptor.getMemoryLimit()));
+            row.add(presentationProperties.getProperty(descriptor.getCheckerType()));
         });
         mainFrame.getProblemsPanel().setTableContent(content);
     }

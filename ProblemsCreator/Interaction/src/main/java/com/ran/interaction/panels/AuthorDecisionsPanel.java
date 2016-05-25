@@ -14,7 +14,7 @@ public class AuthorDecisionsPanel extends JPanel implements Publisher {
 
     public static final String ADD = "add_author_decision";
     public static final String VIEW_CODE = "view_author_decision_code";
-    public static final String SUBMIT = "submit_author_decision";
+    public static final String RUN = "run_author_decision";
     public static final String DELETE = "delete_author_decision";
     public static final String UPDATE = "update_author_decisions";
     public static final String CREATE_ANSWERS = "create_answers";
@@ -43,7 +43,7 @@ public class AuthorDecisionsPanel extends JPanel implements Publisher {
 
         buttonAdd = new javax.swing.JButton();
         buttonViewCode = new javax.swing.JButton();
-        buttonSubmit = new javax.swing.JButton();
+        buttonRun = new javax.swing.JButton();
         buttonDelete = new javax.swing.JButton();
         buttonUpdate = new javax.swing.JButton();
         labelTestGroup = new javax.swing.JLabel();
@@ -55,7 +55,7 @@ public class AuthorDecisionsPanel extends JPanel implements Publisher {
 
         buttonViewCode.setText("View code");
 
-        buttonSubmit.setText("Submit");
+        buttonRun.setText("Run");
 
         buttonDelete.setText("Delete");
 
@@ -78,7 +78,7 @@ public class AuthorDecisionsPanel extends JPanel implements Publisher {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonViewCode)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonSubmit)
+                        .addComponent(buttonRun)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonDelete)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -99,7 +99,7 @@ public class AuthorDecisionsPanel extends JPanel implements Publisher {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonAdd)
                     .addComponent(buttonViewCode)
-                    .addComponent(buttonSubmit)
+                    .addComponent(buttonRun)
                     .addComponent(buttonDelete)
                     .addComponent(buttonUpdate))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -118,7 +118,7 @@ public class AuthorDecisionsPanel extends JPanel implements Publisher {
     private javax.swing.JButton buttonAdd;
     private javax.swing.JButton buttonCreateAnswers;
     private javax.swing.JButton buttonDelete;
-    private javax.swing.JButton buttonSubmit;
+    private javax.swing.JButton buttonRun;
     private javax.swing.JButton buttonUpdate;
     private javax.swing.JButton buttonViewCode;
     private com.ran.interaction.components.PresentationComboBox comboBoxTestGroup;
@@ -131,7 +131,7 @@ public class AuthorDecisionsPanel extends JPanel implements Publisher {
     private void initCustomComponents() {
         buttonAdd.addActionListener(event -> getObserver(ADD).notify(ADD, null));
         buttonViewCode.addActionListener(event -> callObserverIfRowIsSelected(VIEW_CODE));
-        buttonSubmit.addActionListener(event -> callObserverIfRowIsSelected(SUBMIT));
+        buttonRun.addActionListener(event -> callObserverIfRowIsSelected(RUN));
         buttonDelete.addActionListener(event -> callObserverIfRowIsSelected(DELETE));
         buttonUpdate.addActionListener(event -> getObserver(UPDATE).notify(UPDATE, null));
         buttonCreateAnswers.addActionListener(event -> callObserverIfRowIsSelected(CREATE_ANSWERS));
@@ -145,7 +145,7 @@ public class AuthorDecisionsPanel extends JPanel implements Publisher {
     
     @Override
     public List<String> getAvailableIds() {
-        return Arrays.asList(ADD, VIEW_CODE, SUBMIT, DELETE, UPDATE, CREATE_ANSWERS);
+        return Arrays.asList(ADD, VIEW_CODE, RUN, DELETE, UPDATE, CREATE_ANSWERS);
     }
     
     @Override

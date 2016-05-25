@@ -1,5 +1,6 @@
 package com.ran.interaction.support;
 
+import com.ran.filesystem.descriptor.AuthorDecisionDescriptor;
 import com.ran.filesystem.descriptor.ProblemDescriptor;
 import com.ran.filesystem.descriptor.SubmissionDescriptor;
 import com.ran.filesystem.descriptor.TestGroupDescriptor;
@@ -22,8 +23,11 @@ import java.util.Properties;
 
 public class TestingUtil {
     
-    private static final String PROBLEM_TESTER_ID_DEFAULT = "coding";
-    private static final boolean PRETESTS_ONLY_DEFAULT = false;
+    public static final String PROBLEM_TESTER_ID_DEFAULT =
+            ProblemTesterRegistry.CODING_ID;
+    public static final boolean PRETESTS_ONLY_DEFAULT = false;
+    public static final String EVALUATION_SYSTEM_ID_FOR_AUTHOR_DECISIONS =
+            EvaluationSystemRegistry.CHECK_ID;
     
     public static Integer safeConvertToInt(Short value) {
         return (value == null ? null : value.intValue());
@@ -31,6 +35,14 @@ public class TestingUtil {
     
     public static Short safeConvertToShort(Integer value) {
         return (value == null ? null : value.shortValue());
+    }
+    
+    public static String getTimeDescription(Integer time) {
+        return (time == null ? "" : time + " ms");
+    }
+    
+    public static String getMemoryDescription(Integer memory) {
+        return (memory == null ? "" : memory + " MB");
     }
     
     public static String getVerdictDescription(String verdict, Integer points,
@@ -45,7 +57,7 @@ public class TestingUtil {
         return description;
     }
     
-    public static TestingInfo prepareTestingInfo(FileSupplier fileSupplier,
+    public static TestingInfo prepareTestingInfoForSubmission(FileSupplier fileSupplier,
             String submissionFolder, TestResultHandler testResultHandler) {
         SubmissionDescriptor submissionDescriptor = fileSupplier.getSubmissionDescriptor(submissionFolder);
         String problemFolder = submissionDescriptor.getProblemName();
@@ -55,6 +67,24 @@ public class TestingUtil {
         LanguageToolkit languageToolkit = LanguageToolkitRegistry.registry().get(submissionDescriptor.getCompilatorName());
         Checker checker = CheckerRegistry.registry().get(problemDescriptor.getCheckerType());
         CodeFileSupplier codeFileSupplier = new CodeFileSupplierImpl(fileSupplier.getSubmissionCodeSupplier(submissionFolder));
+        ProblemFileSupplier problemFileSupplier = new ProblemFileSupplierImpl(problemFolder, fileSupplier);
+        TestTable testTable = prepareTestTable(fileSupplier, problemFolder);
+        return new TestingInfo(testResultHandler, problemTester, evaluationSystem, languageToolkit, checker,
+                codeFileSupplier, problemFileSupplier, PRETESTS_ONLY_DEFAULT, problemDescriptor.getTimeLimit(),
+                problemDescriptor.getMemoryLimit().shortValue(), testTable);
+    }
+    
+    public static TestingInfo prepareTestingInfoForAuthorDecision(FileSupplier fileSupplier,
+            String problemFolder, String authorDecisionFolder, TestResultHandler testResultHandler) {
+        ProblemDescriptor problemDescriptor = fileSupplier.getProblemDescriptor(problemFolder);
+        AuthorDecisionDescriptor authorDecisionDescriptor = fileSupplier
+                .getAuthorDecisionDescriptor(problemFolder, authorDecisionFolder);
+        ProblemTester problemTester = ProblemTesterRegistry.registry().get(PROBLEM_TESTER_ID_DEFAULT);
+        EvaluationSystem evaluationSystem = EvaluationSystemRegistry.registry().get(EVALUATION_SYSTEM_ID_FOR_AUTHOR_DECISIONS);
+        LanguageToolkit languageToolkit = LanguageToolkitRegistry.registry().get(authorDecisionDescriptor.getCompilatorName());
+        Checker checker = CheckerRegistry.registry().get(problemDescriptor.getCheckerType());
+        CodeFileSupplier codeFileSupplier = new CodeFileSupplierImpl(fileSupplier
+                .getAuthorDecisionCodeSupplier(problemFolder, authorDecisionFolder));
         ProblemFileSupplier problemFileSupplier = new ProblemFileSupplierImpl(problemFolder, fileSupplier);
         TestTable testTable = prepareTestTable(fileSupplier, problemFolder);
         return new TestingInfo(testResultHandler, problemTester, evaluationSystem, languageToolkit, checker,

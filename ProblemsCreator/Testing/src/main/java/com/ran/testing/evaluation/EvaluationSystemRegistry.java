@@ -5,9 +5,9 @@ import com.ran.testing.registry.Suppliers;
 
 public class EvaluationSystemRegistry extends AbstractRegistry<EvaluationSystem> {
 
-    private static final String ICPC_ID = "icpc";
-    private static final String IOI_ID = "ioi";
-    private static final String CHECK_ID = "check";
+    public static final String ICPC_ID = "icpc";
+    public static final String IOI_ID = "ioi";
+    public static final String CHECK_ID = "check";
     
     private static final EvaluationSystemRegistry registry = new EvaluationSystemRegistry();
     

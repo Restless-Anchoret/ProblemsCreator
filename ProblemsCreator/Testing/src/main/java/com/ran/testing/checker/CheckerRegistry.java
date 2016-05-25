@@ -5,7 +5,7 @@ import com.ran.testing.registry.Suppliers;
 
 public class CheckerRegistry extends AbstractRegistry<Checker> {
 
-    private static final String MATCH_ID = "match";
+    public static final String MATCH_ID = "match";
     
     private static final CheckerRegistry registry = new CheckerRegistry();
     

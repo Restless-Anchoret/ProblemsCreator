@@ -5,8 +5,8 @@ import com.ran.testing.registry.Suppliers;
 
 public class LanguageToolkitRegistry extends AbstractRegistry<LanguageToolkit> {
 
-    private static final String JAVA_ID = "java";
-    private static final String VISUAL_CPP_ID = "visual_cpp";
+    public static final String JAVA_ID = "java";
+    public static final String VISUAL_CPP_ID = "visual_cpp";
     
     private static final LanguageToolkitRegistry registry = new LanguageToolkitRegistry();
     

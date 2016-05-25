@@ -5,7 +5,7 @@ import com.ran.testing.registry.Suppliers;
 
 public class ProblemTesterRegistry extends AbstractRegistry<ProblemTester> {
 
-    private static final String CODING_ID = "coding";
+    public static final String CODING_ID = "coding";
     
     private static final ProblemTesterRegistry registry = new ProblemTesterRegistry();
     

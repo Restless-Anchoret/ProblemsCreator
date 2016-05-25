@@ -22,6 +22,7 @@ import com.ran.testing.language.FailException;
 import com.ran.testing.language.LanguageToolkit;
 import com.ran.testing.language.LanguageToolkitRegistry;
 import com.ran.testing.system.TestGroupType;
+import com.ran.testing.system.TestingSystem;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,11 +37,16 @@ public class ProblemController {
     
     private ProblemDialog dialog = null;
     private FileSupplier fileSupplier = null;
+    private TestingSystem testingSystem = null;
     private String problemFolder = null;
     private Properties presentationProperties = PresentationSupport.getPresentationProperties();
 
     public void setFileSupplier(FileSupplier fileSupplier) {
         this.fileSupplier = fileSupplier;
+    }
+
+    public void setTestingSystem(TestingSystem testingSystem) {
+        this.testingSystem = testingSystem;
     }
     
     public void setProblemFolder(String problemFolder) {
@@ -92,7 +98,7 @@ public class ProblemController {
                 .getProblemDescriptor(problemFolder).getCheckerType());
         dialog.getAuthorDecisionsPanel().subscribe(AuthorDecisionsPanel.ADD, this::addAuthorDecision);
         dialog.getAuthorDecisionsPanel().subscribe(AuthorDecisionsPanel.VIEW_CODE, this::viewAuthorDecisionCode);
-        dialog.getAuthorDecisionsPanel().subscribe(AuthorDecisionsPanel.SUBMIT, this::submitAuthorDecision);
+        dialog.getAuthorDecisionsPanel().subscribe(AuthorDecisionsPanel.RUN, this::runAuthorDecision);
         dialog.getAuthorDecisionsPanel().subscribe(AuthorDecisionsPanel.DELETE, this::deleteAuthorDecision);
         dialog.getAuthorDecisionsPanel().subscribe(AuthorDecisionsPanel.UPDATE, this::updateAuthorDecisions);
         dialog.getAuthorDecisionsPanel().subscribe(AuthorDecisionsPanel.CREATE_ANSWERS, this::createAnswersForAuthorDecision);
@@ -350,8 +356,14 @@ public class ProblemController {
         updateAuthorDecisions(null, null);
     }
     
-    public void submitAuthorDecision(String id, Object parameter) {
-        System.out.println("Submit author decision: " + parameter);
+    public void runAuthorDecision(String id, Object parameter) {
+        String authorDecisionFolder = parameter.toString();
+        SubmissionResultController resultController = new SubmissionResultController();
+        resultController.setFileSupplier(fileSupplier);
+        resultController.setTestingSystem(testingSystem);
+        resultController.setAuthorDecisionFolder(authorDecisionFolder);
+        resultController.setProblemFolder(problemFolder);
+        resultController.showDialog();
     }
     
     public void deleteAuthorDecision(String id, Object parameter) {

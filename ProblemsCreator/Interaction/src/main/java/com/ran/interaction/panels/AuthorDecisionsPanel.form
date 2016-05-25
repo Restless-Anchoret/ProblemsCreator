@@ -25,7 +25,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="buttonViewCode" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="buttonSubmit" min="-2" max="-2" attributes="0"/>
+                      <Component id="buttonRun" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="buttonDelete" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
@@ -51,7 +51,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="buttonAdd" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="buttonViewCode" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="buttonSubmit" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="buttonRun" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="buttonDelete" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="buttonUpdate" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -81,9 +81,9 @@
         <Property name="text" type="java.lang.String" value="View code"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="buttonSubmit">
+    <Component class="javax.swing.JButton" name="buttonRun">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Submit"/>
+        <Property name="text" type="java.lang.String" value="Run"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="buttonDelete">
