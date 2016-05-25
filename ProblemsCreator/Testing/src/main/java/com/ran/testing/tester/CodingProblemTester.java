@@ -39,6 +39,7 @@ public class CodingProblemTester implements ProblemTester {
             info.setVerdictInfo(VerdictInfo.VERDICT_COMPILE_ERROR);
             return;
         }
+        info.getChecker().initialize(info.getProblemFileSupplier());
         EvaluationSystem evaluationSystem = info.getEvaluationSystem();
         evaluationSystem.orderTesting(new CodingTesterDelegate(info, fileSupplier), info.isPretestsOnly());
         VerdictInfo verdictInfo = evaluationSystem.getVerdictInfo(info.getTestTable(), info.isPretestsOnly());

@@ -14,7 +14,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 
 public class MatchChecker implements Checker {
-
+    
     @Override
     public Verdict check(Path inputPath, Path outputPath, Path answerPath) {
         if (Files.notExists(inputPath) || Files.notExists(outputPath)) {

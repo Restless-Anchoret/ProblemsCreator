@@ -25,4 +25,9 @@ public class ProblemFileSupplierImpl implements ProblemFileSupplier {
         return fileSupplier.getTestAnswerFile(problemFolder, type.name().toLowerCase(), testNumber);
     }
 
+    @Override
+    public Path getCheckerClassFile() {
+        return fileSupplier.getCheckerCodeSupplier(problemFolder).getCompileFile();
+    }
+
 }

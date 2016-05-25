@@ -24,4 +24,9 @@ public class SimpleProblemFileSupplier implements ProblemFileSupplier {
         return fileSupplier.getTestAnswerFile(problemFolder, type, testNumber);
     }
 
+    @Override
+    public Path getCheckerClassFile() {
+        return null;
+    }
+
 }

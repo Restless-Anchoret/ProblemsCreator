@@ -1,6 +1,7 @@
 package com.ran.testing.registry;
 
 import java.util.Collection;
+import java.util.function.Supplier;
 
 public interface Registry<T> {
 

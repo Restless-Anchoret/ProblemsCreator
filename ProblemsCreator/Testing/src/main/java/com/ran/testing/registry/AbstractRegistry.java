@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public abstract class AbstractRegistry<T> implements Registry<T> {
 
@@ -16,7 +17,7 @@ public abstract class AbstractRegistry<T> implements Registry<T> {
 
     @Override
     public T get(String id) {
-        return map.get(id).supply();
+        return map.get(id).get();
     }
 
     @Override

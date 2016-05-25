@@ -1,6 +1,7 @@
 package com.ran.testing.registry;
 
 import com.ran.testing.logging.TestingLogging;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 
 public class Suppliers {
@@ -10,7 +11,7 @@ public class Suppliers {
     public static <T> Supplier<T> createNewInstanceSupplier(Class<? extends T> cl) {
         return new Supplier<T>() {
             @Override
-            public T supply() {
+            public T get() {
                 try {
                     return cl.newInstance();
                 } catch (IllegalAccessException | InstantiationException exception) {
@@ -27,7 +28,7 @@ public class Suppliers {
             final T instance = cl.newInstance();
             return new Supplier<T>() {
                 @Override
-                public T supply() {
+                public T get() {
                     return instance;
                 }
             };
