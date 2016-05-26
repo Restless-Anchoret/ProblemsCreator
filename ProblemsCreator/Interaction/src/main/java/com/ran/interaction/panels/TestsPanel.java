@@ -21,7 +21,7 @@ public class TestsPanel extends JPanel implements Publisher {
     public static final String SAVE_POINTS = "save_test";
     public static final String CHANGE_TEST_GROUP = "change_test_group";
     
-    public static final String INCORRECT_POINTS_MESSAGE = "You should input number as points for test";
+    public static final String INCORRECT_POINTS_MESSAGE = "You should input points for test as number";
     public static final String INCORRECT_POINTS_TITLE = "Incorrect points";
     public static final String DELETING_TEST_MESSAGE = "Are you sure you want to delete this test?";
     public static final String DELETING_TEST_TITLE = "Deleting test";

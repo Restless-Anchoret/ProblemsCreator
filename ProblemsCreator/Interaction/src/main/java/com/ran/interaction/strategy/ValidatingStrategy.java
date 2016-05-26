@@ -19,7 +19,9 @@ public class ValidatingStrategy extends AbstractDevelopmentStrategy {
     public void setOutputConsumer(Consumer<String> outputConsumer) {
         super.setOutputConsumer(outputConsumer);
         for (DevelopmentListener listener: multiValidator.getDevelopmentListeners()) {
-            multiValidator.removeDevelopmentListener(listener);
+            if (listener instanceof ValidatingListener) {
+                multiValidator.removeDevelopmentListener(listener);
+            }
         }
         multiValidator.addDevelopmentListener(new ValidatingListener(outputConsumer));
     }

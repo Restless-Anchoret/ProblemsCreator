@@ -1,5 +1,6 @@
 package com.ran.interaction.controllers;
 
+import com.ran.development.gen.MultiGenerator;
 import com.ran.development.valid.MultiValidator;
 import com.ran.filesystem.descriptor.AuthorDecisionDescriptor;
 import com.ran.filesystem.descriptor.ProblemDescriptor;
@@ -258,9 +259,48 @@ public class ProblemController {
     }
     
     public void runGenerator(String id, Object parameter) {
+        Integer randomSeed = dialog.getGeneratorsPanel().getRandomSeed();
+        Integer testsQuantity = dialog.getGeneratorsPanel().getTestsToGenerateQuantity();
+        if (randomSeed == null) {
+            SwingUtil.showErrorDialog(dialog, GeneratorsPanel.INCORRECT_RANDOM_SEED_MESSAGE,
+                    GeneratorsPanel.INCORRECT_RANDOM_SEED_TITLE);
+            return;
+        }
+        if (testsQuantity == null) {
+            SwingUtil.showErrorDialog(dialog, GeneratorsPanel.INCORRECT_TESTS_QUANTITY_MESSAGE,
+                    GeneratorsPanel.INCORRECT_TESTS_QUANTITY_TITLE);
+            return;
+        }
+        String generatorFolder = parameter.toString();
+        Path[] paths = getTempFilesToGenerate(testsQuantity);
         DevelopmentController controller = new DevelopmentController();
-        controller.setDevelopmentStrategy(new GeneratingStrategy());
+        MultiGenerator multiGenerator = new MultiGenerator();
+        multiGenerator.setPaths(paths);
+        multiGenerator.setArguments(dialog.getGeneratorsPanel().getArguments());
+        multiGenerator.setRandomSeed(randomSeed);
+        GeneratingStrategy strategy = new GeneratingStrategy(multiGenerator);
+        strategy.setProblemFolder(problemFolder);
+        strategy.setTestGroupToGenerate(dialog.getGeneratorsPanel().getTestGroupType());
+        strategy.setFileSupplier(fileSupplier);
+        strategy.setCodeSupplier(fileSupplier.getGeneratorCodeSupplier(problemFolder, generatorFolder));
+        controller.setDevelopmentStrategy(strategy);
         controller.showDialog();
+        deleteTempFiles(paths);
+        updateTests(null, null);
+    }
+    
+    private Path[] getTempFilesToGenerate(int quantity) {
+        Path[] filesToGenerate = new Path[quantity];
+        for (int i = 0; i < quantity; i++) {
+            filesToGenerate[i] = fileSupplier.getTempFile();
+        }
+        return filesToGenerate;
+    }
+    
+    private void deleteTempFiles(Path[] paths) {
+        for (Path path: paths) {
+            fileSupplier.deleteTempFile(path);
+        }
     }
     
     // ------------------------------------------------------------

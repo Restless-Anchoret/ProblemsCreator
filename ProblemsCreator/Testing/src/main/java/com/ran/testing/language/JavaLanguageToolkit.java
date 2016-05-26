@@ -2,6 +2,7 @@ package com.ran.testing.language;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,11 +42,16 @@ public class JavaLanguageToolkit implements LanguageToolkit {
     
     @Override
     public int compile(Path sourceFile, Path compileFolder, Path configFolder) throws FailException {
+        return compile(sourceFile, compileFolder, configFolder, EMPTY_OUTPUT_STREAM);
+    }
+
+    @Override
+    public int compile(Path sourceFile, Path compileFolder, Path configFolder, OutputStream errorStream) throws FailException {
         if (Files.notExists(sourceFile) || Files.notExists(compileFolder)) {
             throw new FailException("Compilation failed because files were not found.");
         }
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        return compiler.run(null, null, EMPTY_OUTPUT_STREAM, "-d", compileFolder.toString(), sourceFile.toString());
+        return compiler.run(null, null, errorStream, "-d", compileFolder.toString(), sourceFile.toString());
     }
 
     @Override

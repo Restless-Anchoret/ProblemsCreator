@@ -7,6 +7,7 @@ import java.nio.file.Path;
 public interface LanguageToolkit {
     
     int compile(Path sourceFile, Path compileFolder, Path configFolder) throws FailException;
+    int compile(Path sourceFile, Path compileFolder, Path configFolder, OutputStream errorStream) throws FailException;
     ExecutionInfo execute(Path compileFile, Path inputFile, Path outputFile,
             Path configFolder, int timeLimit, short memoryLimit)
             throws FailException, TimeLimitException, MemoryLimitException, SecurityViolatedException;

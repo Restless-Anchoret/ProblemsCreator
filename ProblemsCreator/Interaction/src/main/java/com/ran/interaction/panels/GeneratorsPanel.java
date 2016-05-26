@@ -20,6 +20,12 @@ public class GeneratorsPanel extends JPanel implements Publisher {
     
     public static final String DELETING_GENERATOR_MESSAGE = "Are you sure you want to delete this generator?";
     public static final String DELETING_GENERATOR_TITLE = "Deleting generator";
+    public static final String INCORRECT_RANDOM_SEED_MESSAGE = "You should input random seed as number";
+    public static final String INCORRECT_RANDOM_SEED_TITLE = "Incorrect random seed";
+    public static final String INCORRECT_TESTS_QUANTITY_MESSAGE = "You should input tests quantity as number";
+    public static final String INCORRECT_TESTS_QUANTITY_TITLE = "Incorrect tests quantity";
+    public static final String CANNOT_SAVE_MESSAGE = "You cannot save generated tests now";
+    public static final String CANNOT_SAVE_TITLE = "Saving tests";
     
     private static final String NUMBER = "Number";
     private static final String GENERATOR = "Generator";
@@ -202,6 +208,30 @@ public class GeneratorsPanel extends JPanel implements Publisher {
     
     public void setTestGroupItems(List<SelectItem> items) {
         comboBoxTestGroup.setSelectItems(items);
+    }
+    
+    public String getTestGroupType() {
+        return comboBoxTestGroup.getSelectedValue();
+    }
+    
+    public String[] getArguments() {
+        return textFieldArguments.getText().split(" ");
+    }
+    
+    public Integer getRandomSeed() {
+        try {
+            return Integer.parseInt(textFieldRandomSeed.getText());
+        } catch (NumberFormatException exception) {
+            return null;
+        }
+    }
+    
+    public Integer getTestsToGenerateQuantity() {
+        try {
+            return Integer.parseInt(textFieldQuantity.getText());
+        } catch (NumberFormatException exception) {
+            return null;
+        }
     }
     
 }

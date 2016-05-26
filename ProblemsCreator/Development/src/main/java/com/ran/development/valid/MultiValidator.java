@@ -68,6 +68,7 @@ public class MultiValidator {
             return;
         }
         for (int index = 1; index <= paths.length; index++) {
+            listenerSupport.fireTaskProcessingStarted(index);
             Path path = paths[index - 1];
             long start = System.currentTimeMillis();
             Thread thread = null;

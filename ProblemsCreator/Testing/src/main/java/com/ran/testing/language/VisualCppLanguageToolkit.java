@@ -1,6 +1,7 @@
 package com.ran.testing.language;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -75,6 +76,11 @@ public class VisualCppLanguageToolkit implements LanguageToolkit {
         } catch (IOException | InterruptedException exception) {
             throw new FailException("InterruptedException or IOException while compilation", exception);
         }
+    }
+
+    @Override
+    public int compile(Path sourceFile, Path compileFolder, Path configFolder, OutputStream errorStream) throws FailException {
+        return compile(sourceFile, compileFolder, configFolder);
     }
 
     @Override
