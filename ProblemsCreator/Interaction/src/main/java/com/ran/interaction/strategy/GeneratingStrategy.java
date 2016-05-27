@@ -2,7 +2,6 @@ package com.ran.interaction.strategy;
 
 import com.ran.development.gen.Generator;
 import com.ran.development.gen.MultiGenerator;
-import com.ran.development.util.DevelopmentAdapter;
 import com.ran.development.util.DevelopmentListener;
 import com.ran.development.util.DevelopmentResult;
 import com.ran.development.util.Utils;
@@ -18,28 +17,9 @@ public class GeneratingStrategy extends AbstractDevelopmentStrategy {
     private MultiGenerator multiGenerator;
     private String problemFolder;
     private String testGroupToGenerate;
-    private boolean generatingSuccess = true;
-    private boolean generatingDone = false;
-    private boolean testsHaveBeenSaved = false;
     
     public GeneratingStrategy(MultiGenerator multiGenerator) {
         this.multiGenerator = multiGenerator;
-        initializeSpecialListener();
-    }
-    
-    private void initializeSpecialListener() {
-        this.multiGenerator.addDevelopmentListener(new DevelopmentAdapter() {
-            @Override
-            public void taskIsDone(DevelopmentResult result) {
-                if (result.getInfo() != DevelopmentResult.OK) {
-                    generatingSuccess = false;
-                }
-            }
-            @Override
-            public void processingFinished() {
-                generatingDone = true;
-            }
-        });
     }
 
     public void setProblemFolder(String problemFolder) {
@@ -67,6 +47,11 @@ public class GeneratingStrategy extends AbstractDevelopmentStrategy {
     }
 
     @Override
+    protected void addSuccessDevelopmentListener(DevelopmentListener listener) {
+        multiGenerator.addDevelopmentListener(listener);
+    }
+    
+    @Override
     protected void performDevelopmentProcess() {
         multiGenerator.setGeneratorSupplier(Utils.getSupplier(Generator.class,
                 getCodeSupplier().getCompileFile()));
@@ -75,11 +60,11 @@ public class GeneratingStrategy extends AbstractDevelopmentStrategy {
 
     @Override
     public void saveDevelopmentResults() {
-        if (testsHaveBeenSaved) {
+        if (isResultsHaveBeenSaved()) {
             getOutputConsumer().accept("Tests have already been saved.");
             return;
         }
-        if (!generatingDone || !generatingSuccess) {
+        if (!isDevelopmentDone() || !isDevelopmentSuccess()) {
             SwingUtil.showErrorDialog(null, GeneratorsPanel.CANNOT_SAVE_MESSAGE,
                     GeneratorsPanel.CANNOT_SAVE_TITLE);
             return;
@@ -89,7 +74,7 @@ public class GeneratingStrategy extends AbstractDevelopmentStrategy {
         boolean addingResult = getFileSupplier().addTestInputFiles(
                 problemFolder, testGroupToGenerate, generatedTestsList);
         if (addingResult) {
-            testsHaveBeenSaved = true;
+            setResultsHaveBeenSaved(true);
             getOutputConsumer().accept("Tests were saved successfully.");
         } else {
             getOutputConsumer().accept("Error while saving tests.");

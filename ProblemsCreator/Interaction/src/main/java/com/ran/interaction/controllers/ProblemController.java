@@ -16,6 +16,7 @@ import com.ran.interaction.panels.GeneralPanel;
 import com.ran.interaction.panels.GeneratorsPanel;
 import com.ran.interaction.panels.TestsPanel;
 import com.ran.interaction.panels.ValidatorsPanel;
+import com.ran.interaction.strategy.AnswersCreator;
 import com.ran.interaction.strategy.CreatingAnswersStrategy;
 import com.ran.interaction.strategy.DevelopmentStrategy;
 import com.ran.interaction.strategy.GeneratingStrategy;
@@ -272,7 +273,8 @@ public class ProblemController {
             return;
         }
         String generatorFolder = parameter.toString();
-        Path[] paths = getTempFilesToGenerate(testsQuantity);
+        String testGroupType = dialog.getGeneratorsPanel().getTestGroupType();
+        Path[] paths = getTempFilesForTestGroups(Arrays.asList(testGroupType));
         DevelopmentController controller = new DevelopmentController();
         MultiGenerator multiGenerator = new MultiGenerator();
         multiGenerator.setPaths(paths);
@@ -280,27 +282,13 @@ public class ProblemController {
         multiGenerator.setRandomSeed(randomSeed);
         GeneratingStrategy strategy = new GeneratingStrategy(multiGenerator);
         strategy.setProblemFolder(problemFolder);
-        strategy.setTestGroupToGenerate(dialog.getGeneratorsPanel().getTestGroupType());
+        strategy.setTestGroupToGenerate(testGroupType);
         strategy.setFileSupplier(fileSupplier);
         strategy.setCodeSupplier(fileSupplier.getGeneratorCodeSupplier(problemFolder, generatorFolder));
         controller.setDevelopmentStrategy(strategy);
         controller.showDialog();
         deleteTempFiles(paths);
         updateTests(null, null);
-    }
-    
-    private Path[] getTempFilesToGenerate(int quantity) {
-        Path[] filesToGenerate = new Path[quantity];
-        for (int i = 0; i < quantity; i++) {
-            filesToGenerate[i] = fileSupplier.getTempFile();
-        }
-        return filesToGenerate;
-    }
-    
-    private void deleteTempFiles(Path[] paths) {
-        for (Path path: paths) {
-            fileSupplier.deleteTempFile(path);
-        }
     }
     
     // ------------------------------------------------------------
@@ -343,31 +331,16 @@ public class ProblemController {
     
     public void runValidator(String id, Object parameter) {
         String validatorFolder = parameter.toString();
+        Path[] inputPaths = getInputTestPaths(dialog.getValidatorsPanel().getTestGroupType()).toArray(new Path[] { });
         DevelopmentController controller = new DevelopmentController();
         MultiValidator multiValidator = new MultiValidator();
         multiValidator.setArguments(dialog.getValidatorsPanel().getArguments());
-        multiValidator.setPaths(getInputTestPaths(dialog.getValidatorsPanel().getTestGroupType()));
+        multiValidator.setPaths(inputPaths);
         DevelopmentStrategy strategy = new ValidatingStrategy(multiValidator);
         strategy.setFileSupplier(fileSupplier);
         strategy.setCodeSupplier(fileSupplier.getValidatorCodeSupplier(problemFolder, validatorFolder));
         controller.setDevelopmentStrategy(strategy);
         controller.showDialog();
-    }
-    
-    private Path[] getInputTestPaths(String testGroupType) {
-        List<Path> listPaths = new ArrayList<>();
-        TestGroupType[] types = TestGroupType.values();
-        if (!ALL_TESTS_SIGN.equals(testGroupType)) {
-            types = new TestGroupType[] { TestGroupType.valueOf(testGroupType.toUpperCase()) } ;
-        }
-        for (TestGroupType type: types) {
-            String typeString = type.toString().toLowerCase();
-            for (int testNumber = 1; testNumber <= fileSupplier
-                    .getTestsQuantity(problemFolder, typeString); testNumber++) {
-                listPaths.add(fileSupplier.getTestInputFile(problemFolder, typeString, testNumber));
-            }
-        }
-        return listPaths.toArray(new Path[] { });
     }
     
     // ------------------------------------------------------------
@@ -409,7 +382,7 @@ public class ProblemController {
     
     // ------------------------------------------------------------
     // Listeners for AuthorDecisionsPanel
-    // ------------------------------------------------------------  
+    // ------------------------------------------------------------
     
     public void addAuthorDecision(String id, Object parameter) {
         AddingAuthorDecisionController controller = new AddingAuthorDecisionController();
@@ -463,9 +436,86 @@ public class ProblemController {
     }
     
     public void createAnswersForAuthorDecision(String id, Object parameter) {
+        String authorDecisionFolder = parameter.toString();
+        String testGroupType = dialog.getAuthorDecisionsPanel().getSelectedTestGroupType();
+        AuthorDecisionDescriptor descriptor = fileSupplier.getAuthorDecisionDescriptor(problemFolder, authorDecisionFolder);
+        LanguageToolkit languageToolkit = LanguageToolkitRegistry.registry().get(descriptor.getCompilatorName());
+        AnswersCreator answersCreator = new AnswersCreator();
+        answersCreator.setPathInputs(getInputTestPaths(testGroupType));
+        List<Path> tempAnswerPaths = getTempAnswerTestPaths(testGroupType);
+        answersCreator.setPathAnswers(tempAnswerPaths);
+        CreatingAnswersStrategy strategy = new CreatingAnswersStrategy(answersCreator);
+        strategy.setFileSupplier(fileSupplier);
+        strategy.setCodeSupplier(fileSupplier.getAuthorDecisionCodeSupplier(problemFolder, authorDecisionFolder));
+        strategy.setProblemFolder(problemFolder);
+        strategy.setTestGroupTypes(convertTypesToList(testGroupType));
+        strategy.setLanguageToolkit(languageToolkit);
         DevelopmentController controller = new DevelopmentController();
-        controller.setDevelopmentStrategy(new CreatingAnswersStrategy());
+        controller.setDevelopmentStrategy(strategy);
         controller.showDialog();
+        deleteTempFiles(tempAnswerPaths);
+        updateTests(null, null);
+    }
+    
+    // ------------------------------------------------------------
+    // Util methods
+    // ------------------------------------------------------------
+    
+    private List<Path> getInputTestPaths(String testGroupType) {
+        List<Path> listPaths = new ArrayList<>();
+        List<String> types = convertTypesToList(testGroupType);
+        for (String type: types) {
+            for (int testNumber = 1; testNumber <= fileSupplier
+                    .getTestsQuantity(problemFolder, type); testNumber++) {
+                listPaths.add(fileSupplier.getTestInputFile(problemFolder, type, testNumber));
+            }
+        }
+        return listPaths;
+    }
+    
+    private List<Path> getTempAnswerTestPaths(String testGroupType) {
+        List<Path> listPaths = new ArrayList<>();
+        List<String> types = convertTypesToList(testGroupType);
+        for (String type: types) {
+            for (int testNumber = 1; testNumber <= fileSupplier
+                    .getTestsQuantity(problemFolder, type); testNumber++) {
+                listPaths.add(fileSupplier.getTempFile());
+            }
+        }
+        return listPaths;
+    }
+    
+    private List<String> convertTypesToList(String testGroupType) {
+        if (!ALL_TESTS_SIGN.equals(testGroupType)) {
+            return Arrays.asList(testGroupType);
+        }
+        List<String> convertedList = new ArrayList<>();
+        for (TestGroupType type: TestGroupType.values()) {
+            convertedList.add(type.toString().toLowerCase());
+        }
+        return convertedList;
+    }
+    
+    private Path[] getTempFilesForTestGroups(List<String> testGroupTypes) {
+        int quantity = 0;
+        for (String type: testGroupTypes) {
+            quantity += fileSupplier.getTestsQuantity(problemFolder, type);
+        }
+        Path[] filesToGenerate = new Path[quantity];
+        for (int i = 0; i < quantity; i++) {
+            filesToGenerate[i] = fileSupplier.getTempFile();
+        }
+        return filesToGenerate;
+    }
+    
+    private void deleteTempFiles(Path[] paths) {
+        deleteTempFiles(Arrays.asList(paths));
+    }
+    
+    private void deleteTempFiles(List<Path> paths) {
+        for (Path path: paths) {
+            fileSupplier.deleteTempFile(path);
+        }
     }
     
 }

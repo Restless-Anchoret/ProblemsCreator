@@ -64,7 +64,7 @@ public class MultiValidator {
         listenerSupport.fireProcessingStarted();
         Validator validator = validatorSupplier.get();
         if (validator == null) {
-            finishEarlier("Cannot instantiate Validator subclass", DevelopmentResult.FAIL, 0, paths.length);
+            finishEarlier("Cannot instantiate Validator subclass", DevelopmentResult.FAIL, 1, paths.length);
             return;
         }
         for (int index = 1; index <= paths.length; index++) {
@@ -106,7 +106,7 @@ public class MultiValidator {
     }
     
     private void finishEarlier(String message, int info, int from, int to) {
-        for (int i = from; i < to; i++) {
+        for (int i = from; i <= to; i++) {
             listenerSupport.fireTaskIsDone(new DevelopmentResult(i, message, info));
         }
         listenerSupport.fireProcessingFinished();

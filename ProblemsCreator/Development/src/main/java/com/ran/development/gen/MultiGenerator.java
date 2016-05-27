@@ -73,7 +73,7 @@ public class MultiGenerator {
         listenerSupport.fireProcessingStarted();
         Generator generator = generatorSupplier.get();
         if (generator == null) {
-            finishEarlier("Cannot instantiate Generator subclass", DevelopmentResult.FAIL, 0, paths.length);
+            finishEarlier("Cannot instantiate Generator subclass", DevelopmentResult.FAIL, 1, paths.length);
             return;
         }
         generator.setRandomSeed(randomSeed);
@@ -116,7 +116,7 @@ public class MultiGenerator {
     }
     
     private void finishEarlier(String message, int info, int from, int to) {
-        for (int i = from; i < to; i++) {
+        for (int i = from; i <= to; i++) {
             listenerSupport.fireTaskIsDone(new DevelopmentResult(i, message, info));
         }
         listenerSupport.fireProcessingFinished();

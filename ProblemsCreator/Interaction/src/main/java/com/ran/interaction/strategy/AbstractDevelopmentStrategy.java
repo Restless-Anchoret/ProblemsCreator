@@ -1,6 +1,9 @@
 package com.ran.interaction.strategy;
 
 import com.ran.development.logging.DevelopmentLogging;
+import com.ran.development.util.DevelopmentAdapter;
+import com.ran.development.util.DevelopmentListener;
+import com.ran.development.util.DevelopmentResult;
 import com.ran.filesystem.supplier.CodeSupplier;
 import com.ran.filesystem.supplier.FileSupplier;
 import com.ran.testing.language.FailException;
@@ -10,7 +13,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class AbstractDevelopmentStrategy implements DevelopmentStrategy {
 
@@ -19,6 +21,33 @@ public abstract class AbstractDevelopmentStrategy implements DevelopmentStrategy
     private CodeSupplier codeSupplier = null;
     private Consumer<String> outputConsumer = null;
     private Thread developmentThread = null;
+    private boolean developmentSuccess = true;
+    private boolean developmentDone = false;
+    private boolean resultsHaveBeenSaved = false;
+
+    protected boolean isDevelopmentSuccess() {
+        return developmentSuccess;
+    }
+
+    protected void setDevelopmentSuccess(boolean developmentSuccess) {
+        this.developmentSuccess = developmentSuccess;
+    }
+
+    protected boolean isDevelopmentDone() {
+        return developmentDone;
+    }
+
+    protected void setDevelopmentDone(boolean developmentDone) {
+        this.developmentDone = developmentDone;
+    }
+
+    protected boolean isResultsHaveBeenSaved() {
+        return resultsHaveBeenSaved;
+    }
+
+    protected void setResultsHaveBeenSaved(boolean resultsHaveBeenSaved) {
+        this.resultsHaveBeenSaved = resultsHaveBeenSaved;
+    }
     
     @Override
     public boolean isNeedSaveAbility() {
@@ -61,13 +90,25 @@ public abstract class AbstractDevelopmentStrategy implements DevelopmentStrategy
     public void setOutputConsumer(Consumer<String> outputConsumer) {
         this.outputConsumer = outputConsumer;
     }
-
+    
     public Consumer<String> getOutputConsumer() {
         return outputConsumer;
     }
 
     @Override
     public void runDevelopmentProcess() {
+        addSuccessDevelopmentListener(new DevelopmentAdapter() {
+            @Override
+            public void taskIsDone(DevelopmentResult result) {
+                if (result.getInfo() != DevelopmentResult.OK) {
+                    developmentSuccess = false;
+                }
+            }
+            @Override
+            public void processingFinished() {
+                developmentDone = true;
+            }
+        });
         developmentThread = new Thread(() -> {
             int compilationResult = compileSafety();
             if (compilationResult == 0) {
@@ -105,6 +146,8 @@ public abstract class AbstractDevelopmentStrategy implements DevelopmentStrategy
         }
         return compilationResult;
     }
+    
+    protected void addSuccessDevelopmentListener(DevelopmentListener listener) { }
     
     protected abstract void performDevelopmentProcess();
 
