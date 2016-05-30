@@ -22,18 +22,15 @@
                   <Group type="102" attributes="0">
                       <Component id="tableValidators" pref="0" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="buttonValidate" min="-2" max="-2" attributes="0"/>
-                          <Group type="102" attributes="0">
-                              <Component id="labelArguments" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="textFieldArguments" min="-2" pref="99" max="-2" attributes="0"/>
-                          </Group>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="labelArguments" min="-2" max="-2" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Component id="labelTestGroup" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="comboBoxTestGroup" min="-2" pref="154" max="-2" attributes="0"/>
                           </Group>
+                          <Component id="textFieldArguments" alignment="0" max="32767" attributes="0"/>
+                          <Component id="buttonValidate" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" attributes="0">
@@ -62,17 +59,16 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="tableValidators" pref="296" max="32767" attributes="0"/>
+                  <Component id="tableValidators" alignment="0" pref="296" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="labelTestGroup" max="32767" attributes="0"/>
                           <Component id="comboBoxTestGroup" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="textFieldArguments" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="labelArguments" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="labelArguments" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="textFieldArguments" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="buttonValidate" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>

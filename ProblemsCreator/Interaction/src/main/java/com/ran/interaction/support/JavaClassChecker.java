@@ -1,6 +1,8 @@
 package com.ran.interaction.support;
 
 import com.ran.development.check.WrapperChecker;
+import com.ran.development.util.DevelopmentAdapter;
+import com.ran.development.util.DevelopmentResult;
 import com.ran.development.util.Utils;
 import com.ran.testing.checker.Checker;
 import com.ran.testing.checker.CheckerRegistry;
@@ -39,6 +41,9 @@ public class JavaClassChecker implements Checker {
             TestingLogging.logger.fine("Input, output or answer file was not found");
             return Verdict.FAIL;
         }
+//        if (wrapperChecker.getDevelopmentListeners().isEmpty()) {
+//            wrapperChecker.addDevelopmentListener(new CheckingListener());
+//        }
         int checkingResult = wrapperChecker.check(inputPath, outputPath, answerPath);
         return convertToVerdict(checkingResult);
     }
@@ -48,6 +53,18 @@ public class JavaClassChecker implements Checker {
             case com.ran.development.check.Checker.OK: return Verdict.ACCEPTED;
             case com.ran.development.check.Checker.WRONG_ANSWER: return Verdict.WRONG_ANSWER;
             default: return Verdict.FAIL;
+        }
+    }
+    
+    private static class CheckingListener extends DevelopmentAdapter {
+        @Override
+        public void taskProcessingStarted(int taskNumber) {
+            System.out.println("Task processing started.");
+        }
+        @Override
+        public void taskIsDone(DevelopmentResult result) {
+            System.out.println("Result message: " + result.getMessage());
+            //System.out.println();
         }
     }
 

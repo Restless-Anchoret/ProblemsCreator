@@ -286,14 +286,14 @@ public class ProblemController {
                     GeneratorsPanel.INCORRECT_RANDOM_SEED_TITLE);
             return;
         }
-        if (testsQuantity == null) {
+        if (testsQuantity == null || testsQuantity <= 0) {
             SwingUtil.showErrorDialog(dialog, GeneratorsPanel.INCORRECT_TESTS_QUANTITY_MESSAGE,
                     GeneratorsPanel.INCORRECT_TESTS_QUANTITY_TITLE);
             return;
         }
         String generatorFolder = parameter.toString();
         String testGroupType = dialog.getGeneratorsPanel().getTestGroupType();
-        Path[] paths = getTempFilesForTestGroups(Arrays.asList(testGroupType));
+        Path[] paths = getTempFiles(testsQuantity);
         DevelopmentController controller = new DevelopmentController();
         MultiGenerator multiGenerator = new MultiGenerator();
         multiGenerator.setPaths(paths);
@@ -515,16 +515,12 @@ public class ProblemController {
         return convertedList;
     }
     
-    private Path[] getTempFilesForTestGroups(List<String> testGroupTypes) {
-        int quantity = 0;
-        for (String type: testGroupTypes) {
-            quantity += fileSupplier.getTestsQuantity(problemFolder, type);
+    private Path[] getTempFiles(int testsQuantity) {
+        Path[] tempFiles = new Path[testsQuantity];
+        for (int i = 0; i < testsQuantity; i++) {
+            tempFiles[i] = fileSupplier.getTempFile();
         }
-        Path[] filesToGenerate = new Path[quantity];
-        for (int i = 0; i < quantity; i++) {
-            filesToGenerate[i] = fileSupplier.getTempFile();
-        }
-        return filesToGenerate;
+        return tempFiles;
     }
     
     private void deleteTempFiles(Path[] paths) {

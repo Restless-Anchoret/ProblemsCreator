@@ -48,7 +48,7 @@ public class TokenInput {
     
     public long nextLong() throws CheckResultException {
         try {
-            return Integer.parseInt(nextToken());
+            return Long.parseLong(nextToken());
         } catch (NumberFormatException exception) {
             throw new CheckResultException(failureResultInfo, "Long number was expected", exception);
         }
