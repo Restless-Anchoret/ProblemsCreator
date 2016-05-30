@@ -84,6 +84,9 @@ public class WrapperChecker {
                 }
             }
             CheckingResult checkingResult = futureTask.get();
+            if (checkingResult.getCheckingInfo() == Checker.FAIL) {
+                DevelopmentLogging.logger.fine(checkingResult.getDevelopmentResult().getMessage());
+            }
             listenerSupport.fireTaskIsDone(checkingResult.getDevelopmentResult());
             return checkingResult.getCheckingInfo();
         } catch (IOException exception) {
