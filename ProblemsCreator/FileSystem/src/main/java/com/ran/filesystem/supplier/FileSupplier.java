@@ -14,6 +14,7 @@ public interface FileSupplier {
     List<String> getProblemsFolderNames();
     ProblemDescriptor getProblemDescriptor(String problemFolder);
     Path getProblemStatementPath(String problemFolder);
+    boolean putProblemStatementPath(String problemFolder, Path newStatementPath);
     
     boolean addTestInputFiles(String problemFolder, String testGroupType, List<Path> inputFilePaths);
     boolean addTestAnswerFile(String problemFolder, String testGroupType, int testNumber, Path answerFilePath);

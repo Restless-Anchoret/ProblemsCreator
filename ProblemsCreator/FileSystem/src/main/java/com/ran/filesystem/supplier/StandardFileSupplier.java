@@ -81,7 +81,24 @@ public class StandardFileSupplier implements FileSupplier {
 
     @Override
     public Path getProblemStatementPath(String problemFolder) {
-        return Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder, STATEMENT_FILE_NAME);
+        Path statementPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder, STATEMENT_FILE_NAME);
+        if (Files.exists(statementPath)) {
+            return statementPath;
+        } else {
+            return null;
+        }
+    }
+    
+    @Override
+    public boolean putProblemStatementPath(String problemFolder, Path newStatementPath) {
+        Path statementPath = Paths.get(rootPath, PROBLEMS_FOLDER, problemFolder, STATEMENT_FILE_NAME);
+        try {
+            Files.copy(newStatementPath, statementPath, StandardCopyOption.REPLACE_EXISTING);
+            return true;
+        } catch (IOException exception) {
+            FileSystemLogging.logger.log(Level.FINE, "IOException while putting problem statement", exception);
+            return false;
+        }
     }
 
     // ------------------------------------------------------------

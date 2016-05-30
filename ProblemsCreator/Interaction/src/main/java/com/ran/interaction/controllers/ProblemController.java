@@ -69,9 +69,12 @@ public class ProblemController {
     private void configureDialog(ProblemDialog dialog) {
         ProblemDescriptor descriptor = fileSupplier.getProblemDescriptor(problemFolder);
         dialog.getGeneralPanel().subscribe(GeneralPanel.SAVE, this::saveGeneralProblemChanges);
+        dialog.getGeneralPanel().subscribe(GeneralPanel.LOAD_STATEMENT, this::loadStatementFile);
         dialog.getGeneralPanel().setProblemName(descriptor.getProblemName());
         dialog.getGeneralPanel().setTimeLimit(descriptor.getTimeLimit());
         dialog.getGeneralPanel().setMemoryLimit(descriptor.getMemoryLimit());
+        dialog.getGeneralPanel().setStatementFileDescription(FilesUtil.getFileDescription(
+                fileSupplier.getProblemStatementPath(problemFolder)));
         dialog.getTestsPanel().subscribe(TestsPanel.ADD, this::addTest);
         dialog.getTestsPanel().subscribe(TestsPanel.VIEW_INPUT, this::viewInputTest);
         dialog.getTestsPanel().subscribe(TestsPanel.VIEW_ANSWER, this::viewAnswerTest);
@@ -148,6 +151,22 @@ public class ProblemController {
         descriptor.setTimeLimit(timeLimit);
         descriptor.setMemoryLimit(memoryLimit);
         descriptor.persist();
+    }
+    
+    private void loadStatementFile(String id, Object parameter) {
+        if (dialog.getGeneralPanel().getNewStatementPath() == null) {
+            SwingUtil.showMessageDialog(dialog, GeneralPanel.FILE_PATH_MESSAGE,
+                    GeneralPanel.FILE_PATH_TITLE);
+            return;
+        }
+        boolean puttingStatementSuccess = fileSupplier.putProblemStatementPath(problemFolder,
+                dialog.getGeneralPanel().getNewStatementPath());
+        if (!puttingStatementSuccess) {
+            SwingUtil.showErrorDialog(dialog, GeneralPanel.FILE_LOADING_ERROR_MESSAGE,
+                    GeneralPanel.FILE_LOADING_ERROR_TITLE);
+        }
+        dialog.getGeneralPanel().setStatementFileDescription(FilesUtil.getFileDescription(
+                fileSupplier.getProblemStatementPath(problemFolder)));
     }
     
     // ------------------------------------------------------------
