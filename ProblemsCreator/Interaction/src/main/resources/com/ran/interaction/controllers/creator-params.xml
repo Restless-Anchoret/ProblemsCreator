@@ -4,8 +4,4 @@
         <name>testingSystemThreads</name>
         <value>10</value>
     </param>
-    <param>
-        <name>fileSystemPath</name>
-        <value>D:\Dropbox\University\Graduate work\FileSystem</value>
-    </param>
 </creator-params>

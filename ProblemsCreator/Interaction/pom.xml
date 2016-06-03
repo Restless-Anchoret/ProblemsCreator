@@ -28,10 +28,50 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <exeFileName>Problems Creator</exeFileName>
+        <product.title>Problems Creator</product.title>
+        <product.company>Ran studio</product.company>
+        <product.year>2016</product.year>
+        <jdkVersion>1.8</jdkVersion>
     </properties>
+    <repositories>
+        <repository>
+            <id>akathist-repository</id>
+            <name>Akathist Repository</name>
+            <url>http://www.9stmaryrd.com/maven</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>akathist-repository</id>
+            <name>Akathist Repository</name>
+            <url>http://www.9stmaryrd.com/maven</url>
+        </pluginRepository>
+    </pluginRepositories>
     <build>
         <plugins>
+            <plugin> 
+                <groupId>org.apache.maven.plugins</groupId> 
+                <artifactId>maven-dependency-plugin</artifactId> 
+                <configuration> 
+                    <outputDirectory>${project.build.directory}/lib/</outputDirectory> 
+                    <overWriteReleases>false</overWriteReleases> 
+                    <overWriteSnapshots>false</overWriteSnapshots> 
+                    <overWriteIfNewer>true</overWriteIfNewer>
+                </configuration> 
+                <executions> 
+                    <execution> 
+                        <id>copy-dependencies</id> 
+                        <phase>package</phase> 
+                        <goals> 
+                            <goal>copy-dependencies</goal> 
+                        </goals> 
+                    </execution> 
+                </executions> 
+            </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId> 
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.2</version>
                 <executions>
@@ -46,11 +86,50 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.ran.interaction.main.Main</mainClass>
                             <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <classpathLayoutType>simple</classpathLayoutType>
+                            <mainClass>com.ran.interaction.main.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
+            </plugin>
+            <plugin>
+                <version>1.7.10</version>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>l4j-clui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <dontWrapJar>false</dontWrapJar>
+                            <headerType>gui</headerType>
+                            <outfile>target/${exeFileName}.exe</outfile>
+                            <jar>target/${project.artifactId}-${project.version}.jar</jar>
+                            <errTitle>${product.title}</errTitle>
+                            <chdir>.</chdir>
+                            <priority>normal</priority>
+                            <downloadUrl>http://java.com/download</downloadUrl>
+                            <supportUrl></supportUrl>
+                            <stayAlive>false</stayAlive>
+                            <restartOnCrash>false</restartOnCrash>
+                            <manifest></manifest>
+                            <icon>problems_creator.ico</icon>
+                            <classPath>
+                                <mainClass>com.ran.interaction.main.Main</mainClass>
+                                <addDependencies>true</addDependencies>
+                                <preCp>anything</preCp>
+                            </classPath>
+                            <jre>
+                                <minVersion>${jdkVersion}.0</minVersion>
+                            </jre>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

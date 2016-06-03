@@ -23,6 +23,7 @@ hs_err_pid*
 /GraduateWork/*.toc
 /ProblemsCreator/FileSystem/target/
 /ProblemsCreator/Interaction/target/
+/ProblemsCreator/Interaction/file_system/
 /ProblemsCreator/Interaction/file_system.log
 /ProblemsCreator/Interaction/testing.log
 /ProblemsCreator/Interaction/development.log
