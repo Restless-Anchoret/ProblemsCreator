@@ -33,7 +33,8 @@ public class MatchChecker implements Checker {
                 }
             } while (true);
         } catch (IOException exception) {
-            TestingLogging.logger.log(Level.FINE, "Exception while reading input or output files", exception);
+            TestingLogging.logger.log(Level.FINE,
+                    "Exception while reading input or output files", exception);
             return Verdict.FAIL;
         }
     }
@@ -44,7 +45,8 @@ public class MatchChecker implements Checker {
         private StringTokenizer tokenizer = null;
         
         public Tokenizer(Path path) throws IOException {
-            reader = new BufferedReader(new InputStreamReader(Files.newInputStream(path, StandardOpenOption.READ)));
+            reader = new BufferedReader(new InputStreamReader(Files.newInputStream(
+                    path, StandardOpenOption.READ)));
         }
         
         public String nextToken() throws IOException {

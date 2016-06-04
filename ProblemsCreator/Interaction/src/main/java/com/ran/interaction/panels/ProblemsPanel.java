@@ -16,7 +16,8 @@ public class ProblemsPanel extends JPanel implements Publisher {
     public static final String DELETE = "delete_problem";
     public static final String UPDATE = "update_problems";
     
-    public static final String DELETING_MESSAGE = "Are you sure, you want to delete this problem?";
+    public static final String DELETING_MESSAGE =
+            "Are you sure, you want to delete this problem?";
     public static final String DELETING_TITLE = "Deleting";
     
     private static final String NUMBER = "Number";

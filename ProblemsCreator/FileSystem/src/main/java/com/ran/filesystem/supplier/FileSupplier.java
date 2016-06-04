@@ -16,8 +16,10 @@ public interface FileSupplier {
     Path getProblemStatementPath(String problemFolder);
     boolean putProblemStatementPath(String problemFolder, Path newStatementPath);
     
-    boolean addTestInputFiles(String problemFolder, String testGroupType, List<Path> inputFilePaths);
-    boolean addTestAnswerFile(String problemFolder, String testGroupType, int testNumber, Path answerFilePath);
+    boolean addTestInputFiles(String problemFolder, String testGroupType,
+            List<Path> inputFilePaths);
+    boolean addTestAnswerFile(String problemFolder, String testGroupType, int testNumber,
+            Path answerFilePath);
     void deleteTests(String problemFolder, String testGroupType, List<Integer> testNumbers);
     Path getTestInputFile(String problemFolder, String testGroupType, int testNumber);
     Path getTestAnswerFile(String problemFolder, String testGroupType, int testNumber);
@@ -39,8 +41,10 @@ public interface FileSupplier {
     String addAuthorDecisionFolder(String problemFolder);
     void deleteAuthorDecisionFolder(String problemFolder, String authorDecisionFolder);
     List<String> getAuthorDecisionsFolderNames(String problemFolder);
-    CodeSupplier getAuthorDecisionCodeSupplier(String problemFolder, String authorDecisionFolder);
-    AuthorDecisionDescriptor getAuthorDecisionDescriptor(String problemFolder, String authorDecisionFolder);
+    CodeSupplier getAuthorDecisionCodeSupplier(String problemFolder,
+            String authorDecisionFolder);
+    AuthorDecisionDescriptor getAuthorDecisionDescriptor(String problemFolder,
+            String authorDecisionFolder);
 
     String addSubmissionFolder();
     void deleteSubmissionFolder(String submissionFolder);

@@ -55,7 +55,8 @@ public class EntityDescriptor {
                 }
             }
         } catch (Exception exception) {
-            FileSystemLogging.logger.log(Level.FINE, "Exception while loading submission descriptor", exception);
+            FileSystemLogging.logger.log(Level.FINE,
+                    "Exception while loading submission descriptor", exception);
         }
     }
     
@@ -72,7 +73,8 @@ public class EntityDescriptor {
             }
             document.appendChild(submissionElement);
             DOMImplementation implementation = document.getImplementation();
-            DOMImplementationLS implementationLS = (DOMImplementationLS)implementation.getFeature("LS", "3.0");
+            DOMImplementationLS implementationLS = (DOMImplementationLS)implementation
+                    .getFeature("LS", "3.0");
             LSSerializer serializer = implementationLS.createLSSerializer();
             serializer.getDomConfig().setParameter("format-pretty-print", true);
             LSOutput output = implementationLS.createLSOutput();
@@ -80,7 +82,8 @@ public class EntityDescriptor {
             output.setByteStream(stream);
             serializer.write(document, output);
         } catch (Exception exception) {
-            FileSystemLogging.logger.log(Level.FINE, "Exception while loading submission descriptor", exception);
+            FileSystemLogging.logger.log(Level.FINE,
+                    "Exception while loading submission descriptor", exception);
         }
     }
     

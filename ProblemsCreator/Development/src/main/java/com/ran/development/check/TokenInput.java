@@ -42,7 +42,8 @@ public class TokenInput {
         try {
             return Integer.parseInt(nextToken());
         } catch (NumberFormatException exception) {
-            throw new CheckResultException(failureResultInfo, "Integer number was expected", exception);
+            throw new CheckResultException(failureResultInfo,
+                    "Integer number was expected", exception);
         }
     }
     
@@ -50,7 +51,8 @@ public class TokenInput {
         try {
             return Long.parseLong(nextToken());
         } catch (NumberFormatException exception) {
-            throw new CheckResultException(failureResultInfo, "Long number was expected", exception);
+            throw new CheckResultException(failureResultInfo,
+                    "Long number was expected", exception);
         }
     }
     
@@ -58,7 +60,8 @@ public class TokenInput {
         try {
             return Integer.parseInt(nextToken());
         } catch (NumberFormatException exception) {
-            throw new CheckResultException(failureResultInfo, "Double number was expected", exception);
+            throw new CheckResultException(failureResultInfo,
+                    "Double number was expected", exception);
         }
     }
     

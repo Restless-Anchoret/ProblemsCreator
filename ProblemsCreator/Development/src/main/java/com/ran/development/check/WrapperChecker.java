@@ -77,7 +77,8 @@ public class WrapperChecker {
                         thread.stop();
                         String message = "Checker is working longer than expected";
                         DevelopmentLogging.logger.fine(message);
-                        listenerSupport.fireTaskIsDone(new DevelopmentResult(0, message, DevelopmentResult.FAIL, time));
+                        listenerSupport.fireTaskIsDone(new DevelopmentResult(0, message,
+                                DevelopmentResult.FAIL, time));
                         return Checker.FAIL;
                     }
                     listenerSupport.fireTaskIsProcessing(0, time);
@@ -85,15 +86,16 @@ public class WrapperChecker {
             }
             CheckingResult checkingResult = futureTask.get();
             if (checkingResult.getCheckingInfo() == Checker.FAIL) {
-                DevelopmentLogging.logger.fine(checkingResult.getDevelopmentResult().getMessage());
+                DevelopmentLogging.logger.fine(checkingResult.getDevelopmentResult()
+                        .getMessage());
             }
             listenerSupport.fireTaskIsDone(checkingResult.getDevelopmentResult());
             return checkingResult.getCheckingInfo();
         } catch (IOException exception) {
             String message = "Cannot open one of input files";
             DevelopmentLogging.logger.log(Level.FINE, message, exception);
-            listenerSupport.fireTaskIsDone(new DevelopmentResult(0, message, DevelopmentResult.FAIL,
-                    System.currentTimeMillis() - start));
+            listenerSupport.fireTaskIsDone(new DevelopmentResult(0, message,
+                    DevelopmentResult.FAIL, System.currentTimeMillis() - start));
         } catch (InterruptedException exception) {
             thread.stop();
             listenerSupport.fireTaskIsDone(new DevelopmentResult(0, "Checking interrupted",
@@ -101,7 +103,8 @@ public class WrapperChecker {
         } catch (ExecutionException exception) {
             String message = "Exception while execution of checking";
             DevelopmentLogging.logger.log(Level.FINE, message, exception);
-            listenerSupport.fireTaskIsDone(new DevelopmentResult(0, message, DevelopmentResult.FAIL));
+            listenerSupport.fireTaskIsDone(new DevelopmentResult(0, message,
+                    DevelopmentResult.FAIL));
         }
         return Checker.FAIL;
     }
@@ -140,8 +143,9 @@ public class WrapperChecker {
                 int resultInfo = exception.getResultInfo();
                 int developmentResultInfo = (resultInfo == Checker.FAIL
                         ? DevelopmentResult.FAIL : DevelopmentResult.OK);
-                DevelopmentResult developmentResult = new DevelopmentResult(0, exception.getMessage(),
-                        developmentResultInfo, System.currentTimeMillis() - start);
+                DevelopmentResult developmentResult = new DevelopmentResult(
+                        0, exception.getMessage(), developmentResultInfo,
+                        System.currentTimeMillis() - start);
                 return new CheckingResult(developmentResult, resultInfo);
             } catch (Throwable throwable) {
                 String message = "Unexpected exception while checking";

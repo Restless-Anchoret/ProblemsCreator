@@ -11,7 +11,8 @@ public class Utils {
 
     private Utils() { }
     
-    public static <T> Supplier<? extends T> getSupplier(Class<T> parentClass, Path classFilePath) {
+    public static <T> Supplier<? extends T> getSupplier(Class<T> parentClass,
+            Path classFilePath) {
         try {
             Path folderPath = classFilePath.getParent();
             String className = getClassName(classFilePath);
@@ -22,7 +23,8 @@ public class Utils {
                 try {
                     return cl.newInstance();
                 } catch (InstantiationException | IllegalAccessException exception) {
-                    String message = "Cannot create instance of " + parentClass.getName() + " subclass";
+                    String message = "Cannot create instance of " + parentClass.getName() +
+                            " subclass";
                     DevelopmentLogging.logger.log(Level.FINE, message, exception);
                     return null;
                 }

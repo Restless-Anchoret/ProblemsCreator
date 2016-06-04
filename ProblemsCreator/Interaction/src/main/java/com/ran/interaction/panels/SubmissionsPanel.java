@@ -17,7 +17,8 @@ public class SubmissionsPanel extends JPanel implements Publisher {
     public static final String UPDATE = "update_submissions";
     public static final String VIEW_CODE = "view_submission_code";
     
-    public static final String DELETING_MESSAGE = "Are you sure, you want to delete this submission?";
+    public static final String DELETING_MESSAGE =
+            "Are you sure, you want to delete this submission?";
     public static final String DELETING_TITLE = "Deleting";
     
     private static final String NUMBER = "Number";

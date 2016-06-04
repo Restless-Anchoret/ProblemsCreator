@@ -20,7 +20,9 @@ public class MultiValidator {
     private static final long MESSAGING_DELAY = 2000;
     
     private DevelopmentListenerSupport listenerSupport = new DevelopmentListenerSupport();
-    private Supplier<? extends Validator> validatorSupplier = () -> { return Validator.getDefault(); };
+    private Supplier<? extends Validator> validatorSupplier = () -> {
+        return Validator.getDefault();
+    };
     private Path[] paths = { };
     private String[] arguments = { };
     
@@ -64,7 +66,8 @@ public class MultiValidator {
         listenerSupport.fireProcessingStarted();
         Validator validator = validatorSupplier.get();
         if (validator == null) {
-            finishEarlier("Cannot instantiate Validator subclass", DevelopmentResult.FAIL, 1, paths.length);
+            finishEarlier("Cannot instantiate Validator subclass",
+                    DevelopmentResult.FAIL, 1, paths.length);
             return;
         }
         for (int index = 1; index <= paths.length; index++) {
@@ -74,32 +77,37 @@ public class MultiValidator {
             Thread thread = null;
             try (InputStream inputStream = Files.newInputStream(path)) {
                 validator.setInputStream(inputStream);
-                FutureTask<DevelopmentResult> futureTask = new FutureTask<>(new ValidatingTask(validator, index, arguments));
+                FutureTask<DevelopmentResult> futureTask = new FutureTask<>(
+                        new ValidatingTask(validator, index, arguments));
                 thread = new Thread(futureTask);
                 start = System.currentTimeMillis();
                 thread.start();
                 while (thread.isAlive()) {
                     thread.join(MESSAGING_DELAY);
                     if (thread.isAlive()) {
-                        listenerSupport.fireTaskIsProcessing(index, System.currentTimeMillis() - start);
+                        listenerSupport.fireTaskIsProcessing(index,
+                                System.currentTimeMillis() - start);
                     }
                 }
                 listenerSupport.fireTaskIsDone(futureTask.get());
             } catch (IOException exception) {
                 String message = "Cannot open input file";
                 DevelopmentLogging.logger.log(Level.FINE, message, exception);
-                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message, DevelopmentResult.FAIL,
-                        System.currentTimeMillis() - start));
+                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message,
+                        DevelopmentResult.FAIL, System.currentTimeMillis() - start));
             } catch (InterruptedException exception) {
                 thread.stop();
-                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, "Validating interrupted",
-                        DevelopmentResult.INTERRUPTED, System.currentTimeMillis() - start));
-                finishEarlier("Did not run", DevelopmentResult.DID_NOT_RUN, index + 1, paths.length);
+                listenerSupport.fireTaskIsDone(new DevelopmentResult(index,
+                        "Validating interrupted", DevelopmentResult.INTERRUPTED,
+                        System.currentTimeMillis() - start));
+                finishEarlier("Did not run", DevelopmentResult.DID_NOT_RUN,
+                        index + 1, paths.length);
                 return;
             } catch (ExecutionException exception) {
                 String message = "Exception while execution of validating";
                 DevelopmentLogging.logger.log(Level.FINE, message, exception);
-                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message, DevelopmentResult.FAIL));
+                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message,
+                        DevelopmentResult.FAIL));
             }
         }
         listenerSupport.fireProcessingFinished();
@@ -132,7 +140,8 @@ public class MultiValidator {
                 StrictInput.State state = exception.getStrictInputState();
                 String message = exception.getMessage();
                 if (!state.isReaden()) {
-                    message += " (line = " + state.getLineNumber() + ", column = " + state.getPosition() + ")";
+                    message += " (line = " + state.getLineNumber() + ", column = " +
+                            state.getPosition() + ")";
                 }
                 return new DevelopmentResult(validatorNumber, message, DevelopmentResult.FAIL,
                         System.currentTimeMillis() - start);

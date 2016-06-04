@@ -48,37 +48,43 @@ public abstract class Validator {
         }
     }
     
-    protected void inBounds(int lowEdge, int number, int highEdge) throws ValidationException {
+    protected void inBounds(int lowEdge, int number, int highEdge)
+            throws ValidationException {
         if (!(lowEdge <= number && number <= highEdge)) {
             error("Number out of bounds");
         }
     }
     
-    protected void inBounds(long lowEdge, long number, long highEdge) throws ValidationException {
+    protected void inBounds(long lowEdge, long number, long highEdge)
+            throws ValidationException {
         if (!(lowEdge <= number && number <= highEdge)) {
             error("Number out of bounds");
         }
     }
     
-    protected void inBounds(double lowEdge, double number, double highEdge) throws ValidationException {
+    protected void inBounds(double lowEdge, double number, double highEdge)
+            throws ValidationException {
         if (!(lowEdge <= number && number <= highEdge)) {
             error("Number out of bounds");
         }
     }
     
-    protected void matchesExpression(char symbol, String regularExpression) throws ValidationException {
+    protected void matchesExpression(char symbol, String regularExpression)
+            throws ValidationException {
         if (!parser.matchesExpression(symbol, regularExpression)) {
             error("Symbol does not match the regular expression");
         }
     }
     
-    protected void matchesExpression(String line, String regularExpression) throws ValidationException {
+    protected void matchesExpression(String line, String regularExpression)
+            throws ValidationException {
         if (!parser.matchesExpression(line, regularExpression)) {
             error("Line does not match the regular expression");
         }
     }
     
-    protected void matchesExpression(String[] lines, String regularExpression) throws ValidationException {
+    protected void matchesExpression(String[] lines, String regularExpression)
+            throws ValidationException {
         for (String line: lines) {
             if (!parser.matchesExpression(line, regularExpression)) {
                 error("Line does not match the regular expression");
@@ -104,7 +110,8 @@ public abstract class Validator {
         error("Number is not in values array");
     }
     
-    protected void inValues(double number, double[] values, double epsilon) throws ValidationException {
+    protected void inValues(double number, double[] values, double epsilon)
+            throws ValidationException {
         for (double value: values) {
             if (Math.abs(number - value) <= epsilon) {
                 return;

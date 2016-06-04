@@ -50,7 +50,8 @@ public abstract class Checker {
         quit(resultInfo, null);
     }
 
-    protected void quitIf(boolean condition, int resultInfo, String message) throws CheckResultException {
+    protected void quitIf(boolean condition, int resultInfo, String message)
+            throws CheckResultException {
         if (condition) {
             quit(resultInfo, message);
         }

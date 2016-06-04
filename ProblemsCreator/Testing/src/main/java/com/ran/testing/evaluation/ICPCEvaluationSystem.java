@@ -15,7 +15,8 @@ public class ICPCEvaluationSystem implements EvaluationSystem {
     
     @Override
     public void orderTesting(TesterDelegate delegate, boolean pretestsOnly) {
-        int lastGroupIndex = (pretestsOnly ? TestGroupType.PRETESTS.ordinal() : TestGroupType.values().length - 1);
+        int lastGroupIndex = (pretestsOnly ? TestGroupType.PRETESTS.ordinal() :
+                TestGroupType.values().length - 1);
         TestGroupType[] types = Arrays.copyOfRange(TestGroupType.values(), 0, lastGroupIndex);
         for (TestGroupType type: types) {
             Integer wrongTestNumber = delegate.performTestGroup(type, true);
@@ -31,7 +32,8 @@ public class ICPCEvaluationSystem implements EvaluationSystem {
         Short decisionMemory = null;
         int testsAccepted = 0;
         
-        int lastGroupIndex = (pretestsOnly ? TestGroupType.PRETESTS.ordinal() : TestGroupType.values().length - 1);
+        int lastGroupIndex = (pretestsOnly ? TestGroupType.PRETESTS.ordinal() :
+                TestGroupType.values().length - 1);
         TestGroupType[] types = Arrays.copyOfRange(TestGroupType.values(), 0, lastGroupIndex);
         
         for (TestGroupType type: types) {
@@ -59,15 +61,18 @@ public class ICPCEvaluationSystem implements EvaluationSystem {
     }
 
     @Override
-    public ProblemResult countProblemResult(TreeMap<Date, VerdictInfo> verdictsMap, Date competitionBeginning) {
+    public ProblemResult countProblemResult(TreeMap<Date, VerdictInfo> verdictsMap,
+            Date competitionBeginning) {
         int failureCounter = 0;
         for (Map.Entry<Date, VerdictInfo> entry: verdictsMap.entrySet()) {
             Verdict verdict = entry.getValue().getVerdict();
             if (verdict != Verdict.ACCEPTED && verdict != Verdict.PRETESTS_ACC) {
                 failureCounter++;
             } else {
-                int minutesAfterBeginning = (int)((entry.getKey().getTime() - competitionBeginning.getTime()) / 60_000);
-                return new ProblemResult((short)1, failureCounter * FINE_FOR_FAILURE + minutesAfterBeginning);
+                int minutesAfterBeginning = (int)((entry.getKey().getTime()
+                        - competitionBeginning.getTime()) / 60_000);
+                return new ProblemResult((short)1, failureCounter * FINE_FOR_FAILURE +
+                        minutesAfterBeginning);
             }
         }
         return new ProblemResult((short)0, 0);

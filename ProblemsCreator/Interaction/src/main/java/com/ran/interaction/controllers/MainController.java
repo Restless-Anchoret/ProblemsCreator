@@ -42,7 +42,8 @@ public class MainController {
                 }
             } catch (ClassNotFoundException | InstantiationException |
                     IllegalAccessException | UnsupportedLookAndFeelException exception) {
-                InteractionLogging.logger.log(Level.FINE, "Cannot set Nimbus Look and Feel", exception);
+                InteractionLogging.logger.log(Level.FINE,
+                        "Cannot set Nimbus Look and Feel", exception);
             }
             mainFrame = new MainFrame();
             configurateMainFrame(mainFrame);

@@ -11,7 +11,8 @@ import java.util.logging.Level;
 
 public class MultithreadTestingSystem implements TestingSystem {
 
-    private static final int DEFAULT_THREADS_QUANTITY = Runtime.getRuntime().availableProcessors();
+    private static final int DEFAULT_THREADS_QUANTITY = Runtime.getRuntime()
+            .availableProcessors();
     private static MultithreadTestingSystem defaultSystem = null;
     
     public static MultithreadTestingSystem getDefault() {

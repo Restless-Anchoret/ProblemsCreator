@@ -26,7 +26,8 @@ public class StrictInput {
     private boolean readen = false;
 
     public StrictInput(InputStream inputStream) {
-        this.reader = new SingleCharReader(new BufferedReader(new InputStreamReader(inputStream)));
+        this.reader = new SingleCharReader(new BufferedReader(
+                new InputStreamReader(inputStream)));
     }
 
     public boolean isReaden() {
@@ -102,8 +103,8 @@ public class StrictInput {
         StringBuilder builder = new StringBuilder();
         do {
             int symbol = peekSymbol();
-            if (symbol != -1 && (canStartWithMinus && builder.length() == 0 && (char)symbol == '-'
-                    || Character.isDigit((char)symbol))) {
+            if (symbol != -1 && (canStartWithMinus && builder.length() == 0 &&
+                    (char)symbol == '-' || Character.isDigit((char)symbol))) {
                 nextSymbol();
                 builder.append((char)symbol);
             } else {

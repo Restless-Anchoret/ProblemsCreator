@@ -20,7 +20,9 @@ public class MultiGenerator {
     private static final long MESSAGING_DELAY = 2000;
     
     private DevelopmentListenerSupport listenerSupport = new DevelopmentListenerSupport();
-    private Supplier<? extends Generator> generatorSupplier = () -> { return Generator.getDefault(); };
+    private Supplier<? extends Generator> generatorSupplier = () -> {
+        return Generator.getDefault();
+    };
     private int randomSeed = 0;
     private Path[] paths = { };
     private String[] arguments = { };
@@ -73,7 +75,8 @@ public class MultiGenerator {
         listenerSupport.fireProcessingStarted();
         Generator generator = generatorSupplier.get();
         if (generator == null) {
-            finishEarlier("Cannot instantiate Generator subclass", DevelopmentResult.FAIL, 1, paths.length);
+            finishEarlier("Cannot instantiate Generator subclass",
+                    DevelopmentResult.FAIL, 1, paths.length);
             return;
         }
         generator.setRandomSeed(randomSeed);
@@ -84,32 +87,37 @@ public class MultiGenerator {
             Thread thread = null;
             try (OutputStream output = Files.newOutputStream(path)) {
                 generator.setOutput(output);
-                FutureTask<DevelopmentResult> futureTask = new FutureTask<>(new GeneratingTask(generator, index, arguments));
+                FutureTask<DevelopmentResult> futureTask = new FutureTask<>(
+                        new GeneratingTask(generator, index, arguments));
                 thread = new Thread(futureTask);
                 start = System.currentTimeMillis();
                 thread.start();
                 while (thread.isAlive()) {
                     thread.join(MESSAGING_DELAY);
                     if (thread.isAlive()) {
-                        listenerSupport.fireTaskIsProcessing(index, System.currentTimeMillis() - start);
+                        listenerSupport.fireTaskIsProcessing(index,
+                                System.currentTimeMillis() - start);
                     }
                 }
                 listenerSupport.fireTaskIsDone(futureTask.get());
             } catch (IOException exception) {
                 String message = "Cannot open output file";
                 DevelopmentLogging.logger.log(Level.FINE, message, exception);
-                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message, DevelopmentResult.FAIL,
-                        System.currentTimeMillis() - start));
+                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message,
+                        DevelopmentResult.FAIL, System.currentTimeMillis() - start));
             } catch (InterruptedException exception) {
                 thread.stop();
-                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, "Generating interrupted",
-                        DevelopmentResult.INTERRUPTED, System.currentTimeMillis() - start));
-                finishEarlier("Did not run", DevelopmentResult.DID_NOT_RUN, index + 1, paths.length);
+                listenerSupport.fireTaskIsDone(new DevelopmentResult(index,
+                        "Generating interrupted", DevelopmentResult.INTERRUPTED,
+                        System.currentTimeMillis() - start));
+                finishEarlier("Did not run", DevelopmentResult.DID_NOT_RUN,
+                        index + 1, paths.length);
                 return;
             } catch (ExecutionException exception) {
                 String message = "Exception while execution of generating";
                 DevelopmentLogging.logger.log(Level.FINE, message, exception);
-                listenerSupport.fireTaskIsDone(new DevelopmentResult(index, message, DevelopmentResult.FAIL));
+                listenerSupport.fireTaskIsDone(new DevelopmentResult(
+                        index, message, DevelopmentResult.FAIL));
             }
         }
         listenerSupport.fireProcessingFinished();

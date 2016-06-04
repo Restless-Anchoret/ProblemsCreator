@@ -31,8 +31,8 @@ public class ProblemsCreator {
         String fileSystemPath = creatorParams.getOrDefault(
                 CreatorParamsReader.FILE_SYSTEM_PATH_PARAM_NAME, FILE_SYSTEM_PATH_DEFAULT);
         fileSupplier = new StandardFileSupplier(Paths.get(fileSystemPath));
-        String testingSystemThreads = creatorParams.getOrDefault(
-                CreatorParamsReader.TESTING_SYSTEM_THREADS_PARAM_NAME, TESTING_SYSTEM_THREADS_DEFAULT);
+        String testingSystemThreads = creatorParams.getOrDefault(CreatorParamsReader
+                .TESTING_SYSTEM_THREADS_PARAM_NAME, TESTING_SYSTEM_THREADS_DEFAULT);
         MultithreadTestingSystem multithreadTestingSystem
                 = MultithreadTestingSystem.getDefault();
         multithreadTestingSystem.setThreadsQuantity(Integer.parseInt(testingSystemThreads));
@@ -67,8 +67,10 @@ class CreatorParamsReader {
 
     public Map<String, String> getCreatorParams() {
         Map<String, String> creatorParams = new HashMap<>();
-        try (InputStream creatorParamStream = ProblemsCreator.class.getResourceAsStream(CREATOR_PARAMS_FILE)) {
-            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        try (InputStream creatorParamStream = ProblemsCreator.class
+                .getResourceAsStream(CREATOR_PARAMS_FILE)) {
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance()
+                    .newDocumentBuilder();
             Document document = documentBuilder.parse(creatorParamStream);
             Element rootElement = document.getDocumentElement();
             NodeList paramList = rootElement.getChildNodes();
@@ -79,7 +81,8 @@ class CreatorParamsReader {
                 }
             }
         } catch (Exception exception) {
-            InteractionLogging.logger.log(Level.FINE, "Exception while reading creator-params.xml", exception);
+            InteractionLogging.logger.log(Level.FINE,
+                    "Exception while reading creator-params.xml", exception);
         }
         return creatorParams;
     }

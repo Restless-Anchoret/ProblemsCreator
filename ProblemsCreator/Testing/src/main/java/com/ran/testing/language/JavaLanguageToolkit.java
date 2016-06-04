@@ -31,9 +31,11 @@ public class JavaLanguageToolkit implements LanguageToolkit {
         if (javaProperties == null || !Objects.equals(configFolder, javaPropertiesLocation)) {
             javaProperties = new Properties();
             try {
-                javaProperties.load(Files.newInputStream(configFolder.resolve(PROPERTIES_FILE_NAME)));
+                javaProperties.load(Files.newInputStream(
+                        configFolder.resolve(PROPERTIES_FILE_NAME)));
             } catch (IOException exception) {
-                throw new FailException("Fail because of exception while loading " + PROPERTIES_FILE_NAME, exception);
+                throw new FailException("Fail because of exception while loading "
+                        + PROPERTIES_FILE_NAME, exception);
             }
             javaPropertiesLocation = configFolder;
         }
@@ -41,23 +43,27 @@ public class JavaLanguageToolkit implements LanguageToolkit {
     }
     
     @Override
-    public int compile(Path sourceFile, Path compileFolder, Path configFolder) throws FailException {
+    public int compile(Path sourceFile, Path compileFolder, Path configFolder)
+            throws FailException {
         return compile(sourceFile, compileFolder, configFolder, EMPTY_OUTPUT_STREAM);
     }
 
     @Override
-    public int compile(Path sourceFile, Path compileFolder, Path configFolder, OutputStream errorStream) throws FailException {
+    public int compile(Path sourceFile, Path compileFolder, Path configFolder,
+            OutputStream errorStream) throws FailException {
         if (Files.notExists(sourceFile) || Files.notExists(compileFolder)) {
             throw new FailException("Compilation failed because files were not found.");
         }
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        return compiler.run(null, null, errorStream, "-d", compileFolder.toString(), sourceFile.toString());
+        return compiler.run(null, null, errorStream, "-d", compileFolder.toString(),
+                sourceFile.toString());
     }
 
     @Override
     public ExecutionInfo execute(Path compileFile, Path inputFile, Path outputFile,
             Path configFolder, int timeLimit, short memoryLimit)
-            throws FailException, TimeLimitException, MemoryLimitException, SecurityViolatedException {
+            throws FailException, TimeLimitException, MemoryLimitException,
+            SecurityViolatedException {
         Properties javaProperties = getJavaProperties(configFolder);
         String javaPathProperty = javaProperties.getProperty(JAVA_PATH_PROPERTY);
         String stackSizeProperty = javaProperties.getProperty(STACK_SIZE_PROPERTY);
@@ -101,7 +107,8 @@ public class JavaLanguageToolkit implements LanguageToolkit {
                 }
             }
         } catch (InterruptedException | IOException exception) {
-            throw new FailException("InterruptedException or IOException while execution.", exception);
+            throw new FailException(
+                    "InterruptedException or IOException while execution.", exception);
         }
     }
     
@@ -114,7 +121,8 @@ public class JavaLanguageToolkit implements LanguageToolkit {
         return fileName;
     }
     
-    private void analyseErrorStream(InputStream errorStream) throws MemoryLimitException, SecurityViolatedException {
+    private void analyseErrorStream(InputStream errorStream) throws MemoryLimitException,
+            SecurityViolatedException {
         Scanner scanner = new Scanner(errorStream);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();

@@ -22,7 +22,8 @@ public class TestingInfo {
 
     public TestingInfo(TestResultHandler testResultHandler, ProblemTester problemTester,
             EvaluationSystem evaluationSystem, LanguageToolkit languageToolkit,Checker checker,
-            CodeFileSupplier codeFileSupplier, ProblemFileSupplier problemFileSupplier, boolean pretestsOnly, Integer timeLimit,
+            CodeFileSupplier codeFileSupplier, ProblemFileSupplier problemFileSupplier,
+            boolean pretestsOnly, Integer timeLimit,
             Short memoryLimit, TestTable testTable) {
         this.testResultHandler = testResultHandler;
         this.problemTester = problemTester;

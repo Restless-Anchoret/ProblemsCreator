@@ -10,7 +10,8 @@ public interface EvaluationSystem {
 
     void orderTesting(TesterDelegate delegate, boolean pretestsOnly);
     VerdictInfo getVerdictInfo(TestTable testTable, boolean pretestsOnly);
-    ProblemResult countProblemResult(TreeMap<Date, VerdictInfo> verdictsMap, Date competitionBeginning);
+    ProblemResult countProblemResult(TreeMap<Date, VerdictInfo> verdictsMap,
+            Date competitionBeginning);
 
     public interface TesterDelegate {
         TestTable getTestTable();
